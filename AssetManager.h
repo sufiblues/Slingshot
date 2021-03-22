@@ -3,14 +3,15 @@
 #ifndef _ASSETMANAGER_H
 #define _ASSETMANAGER_H
 
-#include <iostream>
 #include <map>
-#include <SDL.h>
 #include "Context.h"
 
 extern std::map<std::string, SDL_Texture*> GraphicsManager; 
+//ex. FontManager['helvetica', "path/to/helvetica-font"]
+//todo
+extern std::map<std::string, std::string> FontManager;
 
-void insertTexture(std::string name, std::string filepath);
+bool insertTexture(std::string name, std::string filepath);
 
 SDL_Texture* queryTexture(std::string name);
 

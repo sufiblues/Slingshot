@@ -2,8 +2,8 @@
 #ifndef _SHAPES_H
 #define _SHAPES_H
 
-#include "glm.hpp"
-#include "vec2.hpp"
+#include "glm/glm.hpp"
+#include "glm/vec2.hpp"
 #include "Context.h"
 #include <stdio.h>
 
@@ -13,18 +13,18 @@ typedef struct Point;
 
 typedef struct Point {
 	glm::vec2 Pos;
-};
+}Point;
 
 typedef struct Circle {
 	glm::vec2 center;
 	int radius;
-};
+}Circle;
 
 typedef struct Rectangle {
 	glm::vec2 center;
 	int width;
 	int height;
-};
+}Rectangle;
 
 int getLeftX(Rectangle* rect);
 int getRightX(Rectangle* rect);

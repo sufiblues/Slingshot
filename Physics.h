@@ -2,9 +2,6 @@
 #ifndef _PHYSICS_H
 #define _PHYSICS_H
 
-#include <iostream>
-#include "glm.hpp"
-#include "vec2.hpp"
 #include "Shapes.h"
 
 const int GRAVITY = 5;
@@ -15,7 +12,7 @@ const int FRICTION = 2;
 typedef struct PhysicsComponent {
 	glm::vec2 velocity;
 	glm::vec2 acceleration;
-};
+} PhysicsComponent;
 
 void integration(glm::vec2 *pos, PhysicsComponent *object);
 //void gravity(PhysicsComponent* object);

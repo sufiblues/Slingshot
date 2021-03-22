@@ -35,13 +35,11 @@ void RenderTextureID(TextureID* tid, glm::vec2 pos, SDL_Rect* clip, double angle
 	}
 
 	//Render to screen
-	//TODO chekc for null values in the graphics manager
+	//TODO: chekc for null values in the graphics manager
 	SDL_RenderCopyEx(Renderer, GraphicsManager[tid->name], clip, &renderQuad, angle, center, flip);
 	//SDL_Texture* temp = GraphicsManager[text->name];
 
 }
-
-
 
 void setTextureID(TextureID* texture, std::string name) {
 	SDL_Texture* query = GraphicsManager[name];

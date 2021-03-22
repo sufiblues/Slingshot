@@ -3,9 +3,10 @@
 #define _CONTEXT_H
 
 #include <iostream>
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 
 extern const int normalized_tile;
@@ -17,12 +18,12 @@ extern const int FRAME_DELAY;
 extern SDL_Renderer* Renderer;
 extern SDL_Window* Window;
 
-void renderGridLines();
+//create SDL context and intitialize packages
+bool createContext();
+void destroyContext();
 
 SDL_Texture* loadTexture(std::string filename);
 void closeTexture(SDL_Texture* texture);
 
-//initialize sdl packages and window/renderer
-bool initialize_framework();
-void close_framework();
+
 #endif // _CONTEXT_HEADER
