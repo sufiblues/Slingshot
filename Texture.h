@@ -19,6 +19,4 @@ void RenderTextureID(TextureID* tid, glm::vec2 pos, SDL_Rect* clip = NULL, doubl
 //ex. characterTexture(TID)->return graphicsManager[TID.name]
 void setTextureID(TextureID* tid, std::string name);
 
-
-
 #endif

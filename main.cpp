@@ -8,22 +8,14 @@
 #include "AssetManager.h"
 #include "Texture.h"
 #include "Controller.h"
+#include "GameEngine.h"
 
-const int LEVEL_WIDTH = 1280;
-const int LEVEL_HEIGHT = 960;
+//const int LEVEL_WIDTH = 1280;
+//const int LEVEL_HEIGHT = 960;
 
 
-SDL_Color red = { 255,0,0,255 };
-SDL_Color green = { 0,255,0,255 };
-SDL_Color blue = { 0,0,255,0 };
 
-void movePlayer(Controller* input, SDL_Rect* box) {
-    int horizontal_speed = 5;
-    box->x = box->x + input->right*horizontal_speed;
-    box->x = box->x - input->left*horizontal_speed;
-    box->y = box->y + input->down;
-    box->y = box->y - input->up;
-}
+
 
 struct MovableObject {
     Circle hitbox = { glm::vec2(0.0f, 0.0f) , normalized_tile/2 };
@@ -31,7 +23,7 @@ struct MovableObject {
     bool on_ground;
 };
 
-MovableObject player;
+//MovableObject player;
 MovableObject bullet;
 
 
@@ -80,10 +72,9 @@ int main(int argc, char* args[]) {
 
 	createContext();
 
-    int frame_start;
-    int elapsed_ticks;
+    /*
 
-    player.hitbox.center = glm::vec2(normalized_tile * 0, normalized_tile * 0);
+    //player.hitbox.center = glm::vec2(normalized_tile * 0, normalized_tile * 0);
 
     SDL_Rect camera = { 0,0, SCREEN_WIDTH,SCREEN_HEIGHT };
 
@@ -96,8 +87,6 @@ int main(int argc, char* args[]) {
     TextureID background;
     setTextureID(&background, "bg");
 
-    //printTextureDimensions("dustkid");
-
     printRect(dustkid.src);
     printRect(background.src);
 
@@ -107,41 +96,10 @@ int main(int argc, char* args[]) {
 
     while (!INPUTS.quit) {
 
-        frame_start = SDL_GetTicks();
 
         updateInputState(&INPUTS);
     
-        if (INPUTS.left) {
-            addMomentum(&player.physics, glm::vec2(-4, 0));
-        }
-        if (INPUTS.right) {
-            addMomentum(&player.physics, glm::vec2(4, 0));
-        }
-        if (!player.on_ground && !gravity_applied) {
-            //add gravity
-            addForce(&player.physics, glm::vec2(0, 1));
-            gravity_applied = true;
-        }
-        //todo::remove when collision with rectangles gets fleshed out
-        //if player hits the ground 
-        //need to dispace distance when hit ground
-        if (player.hitbox.center[1] + player.hitbox.radius > LEVEL_HEIGHT) {
-            player.on_ground = true;
-            player.hitbox.center[1] = LEVEL_HEIGHT - player.hitbox.radius;
-            //remove gravity
-            removeVerticalForce(&player.physics);
-            removeVerticalMomentum(&player.physics);
-            gravity_applied = false;
-        }
-        
-        if (INPUTS.jump && player.on_ground) {
-            addMomentum(&player.physics, glm::vec2(0,-30));
-            player.on_ground = false;
 
-        }
-        
-        addFriction(&player.physics);
-        integration(&player.hitbox.center, &player.physics);
         
         //TODO convert dimensions into 2d glm vectors
         camera.x = player.hitbox.center[0] - SCREEN_WIDTH / 2;
@@ -180,12 +138,8 @@ int main(int argc, char* args[]) {
         
         
         SDL_RenderPresent(Renderer);
+       
 
-        elapsed_ticks = SDL_GetTicks() - frame_start;
-
-        if (elapsed_ticks  < FRAME_DELAY) {
-            SDL_Delay(FRAME_DELAY - elapsed_ticks);
-        }
         
     }
 
@@ -193,8 +147,9 @@ int main(int argc, char* args[]) {
     //TODO write a function that closes the asset manager
     removeTexture("dustkid");
     removeTexture("bg");
-
+*/
+    gameLoop();
     destroyContext();
-
+ 
 	return 0;
 }

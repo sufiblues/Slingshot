@@ -2,7 +2,6 @@
 
 
 std::map<std::string, SDL_Texture*> GraphicsManager;
-
 std::map<std::string, std::string> FontManager;
 
 bool insertTexture(std::string name, std::string filename) {
@@ -61,3 +60,5 @@ void printTextureDimensions(std::string name) {
 		printf("%s texture has dimensions [%d, %d] \n", temp.w, temp.h);
 	}
 }
+
+

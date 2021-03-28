@@ -20,5 +20,8 @@ void printTextureDimensions(std::string name);
 void removeTexture(std::string name);
 
 
+
+
+
 #endif // !_ASSETMANAGER_H
 
