@@ -25,8 +25,13 @@ void loadAssets(){
 }
 
 
-
 void gameLoop(){
+    getInput();
+    update();
+    render();
+}
+
+void engineStart(){
 
     loadAssets();
 
@@ -34,9 +39,6 @@ void gameLoop(){
     p.gravity_applied = false;
     p.hitbox.radius = normalized_tile;
     p.hitbox.center = glm::vec2(normalized_tile * 0, normalized_tile * 0);
-
-
-
 
     p.hitbox.center[0] = LEVEL_WIDTH / 2;
     p.hitbox.center[1] = LEVEL_HEIGHT / 2;
@@ -46,14 +48,15 @@ void gameLoop(){
 	int frame_start;
     int elapsed_ticks;
 
+#ifdef EMSCRIPTEN
+    emscripten_set_main_loop(gameLoop, -1, 0);
+#else
 	while(!INPUTS.quit){
 		
 		frame_start = SDL_GetTicks();
 
 
-		getInput();
-		update();
-		render();
+		gameLoop();
 
 		elapsed_ticks = SDL_GetTicks() - frame_start;
 
@@ -61,6 +64,7 @@ void gameLoop(){
             SDL_Delay(FRAME_DELAY - elapsed_ticks);
         }
 	}
+#endif
 
 
 
@@ -111,7 +115,7 @@ void update(){
     //if player hits the ground 
     //need to dispace distance when hit ground
     if (p.hitbox.center[1] + p.hitbox.radius > LEVEL_HEIGHT) {
-=
+
         p.on_ground = true;
         p.hitbox.center[1] = LEVEL_HEIGHT - p.hitbox.radius;
         //remove gravity

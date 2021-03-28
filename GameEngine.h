@@ -7,6 +7,10 @@
 #include "Shapes.h"
 #include "glm/vec2.hpp"
 
+#if EMSCRIPTEN
+#include <emscripten.h>
+#endif
+
 extern const int LEVEL_HEIGHT;
 extern const int LEVEL_WIDTH;
 
@@ -26,7 +30,7 @@ struct User {
 
 
 
-
+void engineStart();
 
 void gameLoop();
 

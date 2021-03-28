@@ -10,6 +10,8 @@
 #include "Controller.h"
 #include "GameEngine.h"
 
+
+
 //const int LEVEL_WIDTH = 1280;
 //const int LEVEL_HEIGHT = 960;
 
@@ -71,6 +73,8 @@ bool gravity_applied = false;
 int main(int argc, char* args[]) {
 
 	createContext();
+
+
 
     /*
 
@@ -148,7 +152,8 @@ int main(int argc, char* args[]) {
     removeTexture("dustkid");
     removeTexture("bg");
 */
-    gameLoop();
+    engineStart();
+    
     destroyContext();
  
 	return 0;
