@@ -20,7 +20,7 @@ TextureID background;
 
 void loadAssets(){
     //load textures
-    insertTexture("bg", "textures/logolight.png");
+    insertTexture("bg", "assets/textures/logolight.png");
     setTextureID(&background, "bg");
 }
 
@@ -33,7 +33,7 @@ void gameLoop(){
 
 void engineStart(){
 
-    //loadAssets();
+    loadAssets();
 
     p.on_ground = true;
     p.gravity_applied = false;
