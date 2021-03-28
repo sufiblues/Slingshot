@@ -13,18 +13,18 @@ typedef struct Point;
 
 typedef struct Point {
 	glm::vec2 Pos;
-}Point;
+} Point;
 
 typedef struct Circle {
 	glm::vec2 center;
 	int radius;
-}Circle;
+} Circle;
 
 typedef struct Rectangle {
 	glm::vec2 center;
 	int width;
 	int height;
-}Rectangle;
+} Rectangle;
 
 int getLeftX(Rectangle* rect);
 int getRightX(Rectangle* rect);

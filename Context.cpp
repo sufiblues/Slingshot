@@ -13,8 +13,8 @@ SDL_Window* Window;
 SDL_Renderer* Renderer;
 
 bool createContext() {
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-		printf("SDL could not be initialized! Error: %s", SDL_GetError());
+	if (SDL_Init(SDL_INIT_VIDEO & ~SDL_INIT_HAPTIC) < 0) {
+		printf("SDL could not be initialized! Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (IMG_Init(IMG_INIT_PNG) < 0) {

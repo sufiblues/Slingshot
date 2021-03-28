@@ -33,7 +33,7 @@ void gameLoop(){
 
 void engineStart(){
 
-    loadAssets();
+    //loadAssets();
 
     p.on_ground = true;
     p.gravity_applied = false;
@@ -49,7 +49,7 @@ void engineStart(){
     int elapsed_ticks;
 
 #ifdef EMSCRIPTEN
-    emscripten_set_main_loop(gameLoop, -1, 0);
+    emscripten_set_main_loop(gameLoop, 0, 1);
 #else
 	while(!INPUTS.quit){
 		
