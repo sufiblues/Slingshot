@@ -34,8 +34,41 @@ bool insertTexture(std::string name, std::string filename) {
 		}
 
 	}
-
 }
+
+
+bool insertTexture(std::string name, std::string filename,SDL_Rect* fill) {
+
+	SDL_Texture* query = NULL;
+		//Load image at specified path
+	SDL_Surface* loadedSurface = IMG_Load(filename.c_str());
+  SDL_Surface* destination = SDL_CreateRGBSurfaceWithFormat(0, fill->w,fill->h , 32, SDL_PIXELFORMAT_RGBA32);
+	if (loadedSurface == NULL){
+		printf("Unable to load image %s! SDL_image Error: %s\n", filename.c_str(), IMG_GetError());
+		return false;
+	}
+	else{
+		SDL_BlitScaled(loadedSurface,NULL,destination, fill);
+		if (destination == NULL){
+				printf("Unable to scale surface %s! SDL Error: %s\n", filename.c_str(), SDL_GetError());
+				return false;
+		}
+		//Create texture from surface pixels
+		query = SDL_CreateTextureFromSurface(Renderer, destination);
+		//Get rid of old loaded surface
+		SDL_FreeSurface(loadedSurface);
+		SDL_FreeSurface(destination);
+		if (query == NULL){
+			printf("Unable to create texture from %s! SDL Error: %s\n", filename.c_str(), SDL_GetError());
+			return false;
+		}
+		else{
+			GraphicsManager[name] = query;
+			return true;
+		}
+	}
+}
+
 
 void removeTexture(std::string name) {
 	SDL_DestroyTexture(GraphicsManager[name]);

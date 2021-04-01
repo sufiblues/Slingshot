@@ -13,6 +13,8 @@ extern std::map<std::string, std::string> FontManager;
 
 bool insertTexture(std::string name, std::string filepath);
 
+bool insertTexture(std::string name, std::string filepath, SDL_Rect* fill);
+
 SDL_Texture* queryTexture(std::string name);
 
 void printTextureDimensions(std::string name);

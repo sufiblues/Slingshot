@@ -15,12 +15,18 @@ SDL_Rect camera = { 0,0, SCREEN_WIDTH,SCREEN_HEIGHT };
 
 /*Create TIDs for future textures*/
 //TODO: Figure out a better way to organize this data so it is available in the render loop
+TextureID chars;
 TextureID background;
-
 
 void loadAssets(){
     //load textures
-    insertTexture("bg", "assets/textures/logolight.png");
+    insertTexture("chars", "assets/textures/char_test/idle0001.png");
+    setTextureID(&chars, "chars");
+    background.src.x = 0;
+    background.src.y = 0;
+    background.src.w = LEVEL_WIDTH;
+    background.src.h = LEVEL_HEIGHT;
+    insertTexture("bg", "assets/textures/smash-3.jpg", &background.src); 
     setTextureID(&background, "bg");
 }
 
@@ -105,6 +111,14 @@ void update(){
     if (INPUTS.right) {
         addMomentum(&p.physics, glm::vec2(4, 0));
     }
+    if (INPUTS.up){
+        addMomentum(&p.physics, glm::vec2(0,-4));
+    }
+    
+    if (INPUTS.down){
+        addMomentum(&p.physics, glm::vec2(0,4));
+    }
+    /*
     if (!p.on_ground && !p.gravity_applied) {
 
         //add gravity
@@ -129,7 +143,7 @@ void update(){
         p.on_ground = false;
 
     }
-    
+    */
     addFriction(&p.physics);
     integration(&p.hitbox.center, &p.physics);
     
@@ -142,9 +156,9 @@ void render(){
 
     RenderTextureID(&background,0,0, &camera);
 
-    //glm::vec2 something = glm::vec2(p.hitbox.center[0] - camera.x, p.hitbox.center[1] - camera.y);
+    glm::vec2 something = glm::vec2(p.hitbox.center[0] - camera.x, p.hitbox.center[1] - camera.y);
 
-    //RenderTextureID(&background,something );
+    RenderTextureID(&chars,something );
     
     RenderShape(&p.hitbox,red,camera.x,camera.y);
 
