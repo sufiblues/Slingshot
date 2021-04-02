@@ -6,6 +6,7 @@
 #include "Physics.h"
 #include "Shapes.h"
 #include "glm/vec2.hpp"
+#include "Level.h"
 
 #if EMSCRIPTEN
 #include <emscripten.h>

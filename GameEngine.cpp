@@ -1,11 +1,15 @@
 
 #include "GameEngine.h"
 
-const int LEVEL_HEIGHT = 1280;
-const int LEVEL_WIDTH = 960;
+const int LEVEL_HEIGHT = normalized_tile * 18;
+const int LEVEL_WIDTH = normalized_tile * 32;
 
 
 User p;
+
+/*~~~~Platforms for player to jump around on~~~~*/
+Rectangle block;
+Level one(normalized_tile, 18,32);
 /*~~~~~~FIGuRE O"UT WHAT TO DO WITh THIS LATER~~~~~~~~*/
 SDL_Color red = { 255,0,0,255 };
 SDL_Color green = { 0,255,0,255 };
@@ -28,6 +32,10 @@ void loadAssets(){
     background.src.h = LEVEL_HEIGHT;
     insertTexture("bg", "assets/textures/smash-3.jpg", &background.src); 
     setTextureID(&background, "bg");
+    block.center = glm::vec2(16*normalized_tile,16*normalized_tile);
+    block.width = 5 * normalized_tile;
+    block.height = 2 * normalized_tile;
+
 }
 
 
@@ -41,7 +49,7 @@ void engineStart(){
 
     loadAssets();
 
-    p.on_ground = true;
+    p.on_ground = false;
     p.gravity_applied = false;
     p.hitbox.radius = normalized_tile;
     p.hitbox.center = glm::vec2(normalized_tile * 0, normalized_tile * 0);
@@ -60,7 +68,6 @@ void engineStart(){
 	while(!INPUTS.quit){
 		
 		frame_start = SDL_GetTicks();
-
 
 		gameLoop();
 
@@ -111,14 +118,6 @@ void update(){
     if (INPUTS.right) {
         addMomentum(&p.physics, glm::vec2(4, 0));
     }
-    if (INPUTS.up){
-        addMomentum(&p.physics, glm::vec2(0,-4));
-    }
-    
-    if (INPUTS.down){
-        addMomentum(&p.physics, glm::vec2(0,4));
-    }
-    /*
     if (!p.on_ground && !p.gravity_applied) {
 
         //add gravity
@@ -143,7 +142,6 @@ void update(){
         p.on_ground = false;
 
     }
-    */
     addFriction(&p.physics);
     integration(&p.hitbox.center, &p.physics);
     
@@ -158,9 +156,12 @@ void render(){
 
     glm::vec2 something = glm::vec2(p.hitbox.center[0] - camera.x, p.hitbox.center[1] - camera.y);
 
-    RenderTextureID(&chars,something );
-    
+    RenderTextureID(&chars,something ); 
     RenderShape(&p.hitbox,red,camera.x,camera.y);
+    RenderShape(&block,blue, camera.x, camera.y);
+
+    
+    one.showGridLines(camera.x, camera.y);
 
     SDL_RenderPresent(Renderer);
 

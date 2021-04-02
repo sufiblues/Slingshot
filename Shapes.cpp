@@ -114,6 +114,16 @@ void RenderShape(Circle* circle, SDL_Color color, int camera_x, int camera_y) {
     }
 }
 
+void RenderShape(Rectangle* rectangle, SDL_Color color, int camera_x, int camera_y){
+    SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b,color.a);
+
+    glm::vec2 cam_center = rectangle->center;
+    cam_center[0] = cam_center[0] - camera_x;
+    cam_center[1] = cam_center[1] - camera_y;
+    
+    SDL_Rect temp = {(int)(rectangle->center[0] - rectangle->width / 2) - camera_x, (int)(rectangle->center[1] - rectangle->height / 2) - camera_y, rectangle->width, rectangle->height };
+    SDL_RenderFillRect(Renderer, &temp);
+}
 
 void RenderShape(Rectangle* rectangle, SDL_Color color) {
     SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
