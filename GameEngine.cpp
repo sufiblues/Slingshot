@@ -48,6 +48,7 @@ void gameLoop(){
 void engineStart(){
 
     loadAssets();
+    one.addBlock(17, 1);
 
     p.on_ground = false;
     p.gravity_applied = false;
@@ -162,7 +163,7 @@ void render(){
 
     
     one.showGridLines(camera.x, camera.y);
-
+    one.drawBlock(10, 10, camera.x, camera.y);
     SDL_RenderPresent(Renderer);
 
 }
