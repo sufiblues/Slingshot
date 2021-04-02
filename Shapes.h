@@ -7,9 +7,6 @@
 #include "Context.h"
 #include <stdio.h>
 
-typedef struct Circle;
-typedef struct Rectangle;
-typedef struct Point;
 
 typedef struct Point {
 	glm::vec2 Pos;
@@ -35,6 +32,7 @@ bool collisionCircleAndRectangle(Circle *circle, Rectangle *rect);
 bool collisionRectangleAndRectangle(Rectangle *a, Rectangle *b);
 bool collisionPointInShape(Point *p, Circle *circle);
 bool collisionPointInShape(Point *p, Rectangle *rectangle);
+/*** [0:NONE] [1:LEFT] [2:RIGHT] [3:TOP] [4:DOWN] [5:CORNER] ***/
 int directionOfHit(Circle *circle, Rectangle *rect);
 
 void debugInfo(Rectangle rectangle,bool coordinates = false);

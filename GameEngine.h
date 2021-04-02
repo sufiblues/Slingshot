@@ -1,6 +1,7 @@
 #ifndef GAME_ENGINE
 #define GAME_ENGINE
 
+#include "Utils.h"
 #include "Controller.h"
 #include "Texture.h"
 #include "Physics.h"

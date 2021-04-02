@@ -13,6 +13,7 @@ int getBottomY(Rectangle* rect) {
     return rect->center[1] + rect->height / 2;
 }
 
+/* [0:NONE] [1:LEFT] [2:RIGHT] [3:TOP] [4:DOWN] [5:CORNER] */
 int directionOfHit(Circle* circle, Rectangle* rect) {
     //initialize the x and y position of the closePoint vector
     glm::vec2 close_point = circle->center;

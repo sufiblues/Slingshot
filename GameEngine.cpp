@@ -8,14 +8,7 @@ const int LEVEL_WIDTH = normalized_tile * 32;
 User p;
 
 /*~~~~Platforms for player to jump around on~~~~*/
-Rectangle block;
 Level one(normalized_tile, 18,32);
-/*~~~~~~FIGuRE O"UT WHAT TO DO WITh THIS LATER~~~~~~~~*/
-SDL_Color red = { 255,0,0,255 };
-SDL_Color green = { 0,255,0,255 };
-SDL_Color blue = { 0,0,255,0 };
-    
-SDL_Rect camera = { 0,0, SCREEN_WIDTH,SCREEN_HEIGHT };
 
 /*Create TIDs for future textures*/
 //TODO: Figure out a better way to organize this data so it is available in the render loop
@@ -24,18 +17,18 @@ TextureID background;
 
 void loadAssets(){
     //load textures
+    
     insertTexture("chars", "assets/textures/char_test/idle0001.png");
     setTextureID(&chars, "chars");
+    one.loadAssets();
+    /*
     background.src.x = 0;
     background.src.y = 0;
     background.src.w = LEVEL_WIDTH;
     background.src.h = LEVEL_HEIGHT;
     insertTexture("bg", "assets/textures/smash-3.jpg", &background.src); 
     setTextureID(&background, "bg");
-    block.center = glm::vec2(16*normalized_tile,16*normalized_tile);
-    block.width = 5 * normalized_tile;
-    block.height = 2 * normalized_tile;
-
+    */
 }
 
 
@@ -48,7 +41,7 @@ void gameLoop(){
 void engineStart(){
 
     loadAssets();
-    one.addBlock(17, 1);
+    one.addBlock(17, 30);
 
     p.on_ground = false;
     p.gravity_applied = false;
@@ -113,11 +106,19 @@ void update(){
     }
 
     
-    if (INPUTS.left) {
+    int flag = one.playerCollideWithLevel(&p.hitbox);
+     
+    if (INPUTS.left && flag != 1) {
         addMomentum(&p.physics, glm::vec2(-4, 0));
     }
-    if (INPUTS.right) {
+    if (INPUTS.right && flag != 2) {
         addMomentum(&p.physics, glm::vec2(4, 0));
+    }
+    if (flag == 1){
+        removeHorizontalMomentum(&p.physics);
+    }
+    if (flag == 2){
+        removeHorizontalMomentum(&p.physics);
     }
     if (!p.on_ground && !p.gravity_applied) {
 
@@ -137,12 +138,14 @@ void update(){
         removeVerticalMomentum(&p.physics);
         p.gravity_applied = false;
     }
+
     if (INPUTS.jump && p.on_ground) {
 
         addMomentum(&p.physics, glm::vec2(0,-30));
         p.on_ground = false;
 
     }
+
     addFriction(&p.physics);
     integration(&p.hitbox.center, &p.physics);
     
@@ -153,17 +156,19 @@ void render(){
     SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 0);
     SDL_RenderClear(Renderer);
 
-    RenderTextureID(&background,0,0, &camera);
+    //RenderTextureID(&background,0,0, &camera);
 
     glm::vec2 something = glm::vec2(p.hitbox.center[0] - camera.x, p.hitbox.center[1] - camera.y);
 
-    RenderTextureID(&chars,something ); 
+    //RenderTextureID(&chars,something ); 
+    RenderTextureID(&chars, 0, 0, &camera);
     RenderShape(&p.hitbox,red,camera.x,camera.y);
-    RenderShape(&block,blue, camera.x, camera.y);
-
     
+     
     one.showGridLines(camera.x, camera.y);
-    one.drawBlock(10, 10, camera.x, camera.y);
+    one.renderBlocks(camera.x, camera.y);
+    one.renderAssets(camera.x, camera.y);
+    
     SDL_RenderPresent(Renderer);
 
 }
