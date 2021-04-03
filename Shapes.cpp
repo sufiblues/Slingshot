@@ -57,41 +57,52 @@ int directionOfHit(Circle* circle, Rectangle* rect) {
     return 0;
 }
 
+
+
 /** [0:NONE] [1:TOP] [2:BOTTOM] [3:LEFT] [4:RIGHT] */
-int collisionRectangleAndRectangle(Rectangle *a, Rectangle *b){
-    int w = (a->width + b->width)/2;
-    int h = (a->height + b->height)/2;
-    int dx = a->center[0] - b->center[0];
-    int dy = a->center[1] - b->center[1];
+//TODO: Fix the pointer shit to this function
+int collisionRectangleAndRectangle(Rectangle* a, Rectangle b){
+    int w = (a->width + b.width)/2;
+    int h = (a->height + b.height)/2;
+    int dx = a->center[0] - b.center[0];
+    int dy = a->center[1] - b.center[1];
 
     if (abs(dx) <= w && abs(dy) <= h){
        int wy = w * dy;
        int hx = h * dx;
+       
+       glm::vec2 correction = glm::vec2((dx * (w-abs(dx)))/abs(dx) ,(dy * (h-abs(dy)))/abs(dy));
+       a->center = a->center + correction;
+      // printf("Correction %f, %f\n", correction[0] , correction[1]);
+       
        if (wy > hx){
            if (wy > -hx){
-               return 1;
+               //return top
+               //printf("TOP\n");
+               return (1 << 1);
            }
            else{
-               return 2;
+               //return RIGHT
+               //printf("RIGHT\n");
+               return (1 << 3);
            }
        }
        else{
            if (wy > -hx){
-               return 3;
+               //return left
+               //printf("LEFT\n");
+               return (1 << 2);
            }
            else{
-               return 4;
+               //return BOT 
+               //printf("BOT\n");
+               return (1 << 1);
            }
        }
     }
     else{
         return 0;
-    }
-
-
-
-    
-    
+    }  
 }
 
 void RenderShape(Circle* circle, SDL_Color color) {

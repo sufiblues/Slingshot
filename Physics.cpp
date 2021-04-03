@@ -43,6 +43,9 @@ void addFriction(PhysicsComponent* object) {
         }
     }
 }
+/** [0: CANT MOVE] [1:CANT MOVE UP] [2:CANT MOVE DOWN] [3:CANT MOVE LEFT] [4:CANT MOVE RIGHT] */
+void capMomentum(PhysicsComponent* object, int direction){
+}
 
 void removeVerticalMomentum(PhysicsComponent* object) {
     object->velocity[1] = 0;

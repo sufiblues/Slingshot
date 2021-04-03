@@ -4,6 +4,12 @@ Level::~Level(){
 
 }
 
+void Level::addFloor(){
+	for (int i = 0; i < columns; i++){
+		addBlock(rows-1, i);
+	}
+}
+
 Level::Level(int n, int r,int c){
 	rows = r;
 	columns = c;

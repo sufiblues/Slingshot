@@ -5,8 +5,8 @@
 #include "Shapes.h"
 
 const int GRAVITY = 5;
-const int TERMINAL_VERTICAL_SPEED = 30;
-const int TERMINNAL_HORIZONTAL_SPEED = 20;
+const int TERMINAL_VERTICAL_SPEED = 5;
+const int TERMINNAL_HORIZONTAL_SPEED = 5;
 const int FRICTION = 2;
 
 typedef struct PhysicsComponent {

@@ -23,6 +23,8 @@ class Level {
 		Level(int n, int r, int c);
 		~Level();
 		
+		void addFloor();
+
 		bool addBlock(int i, int j);
 		bool removeBlock(int i, int j);
 		

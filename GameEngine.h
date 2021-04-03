@@ -1,6 +1,7 @@
 #ifndef GAME_ENGINE
 #define GAME_ENGINE
 
+#include <algorithm>
 #include "Utils.h"
 #include "Controller.h"
 #include "Texture.h"
