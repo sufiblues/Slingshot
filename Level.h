@@ -6,6 +6,8 @@
 #include "Context.h"
 #include "Shapes.h"
 #include "Utils.h"
+#include "Player.h"
+
 class Level {
 	public:
 		int normalized;
@@ -15,7 +17,9 @@ class Level {
 		std::vector<std::pair<int,int>> activeblocks;
 		std::vector<Rectangle> levelBlocks;
 		std::vector<TextureID> renderable;
-	
+		glm::vec2 level_center;	
+		
+
 		Level(int n, int r, int c);
 		~Level();
 		
@@ -25,11 +29,12 @@ class Level {
 		void printBoard();	 
 		void showGridLines(int cx, int cy);
 		
-		void renderBlocks(int cx, int cy);
+		void renderBlocks();
 		void drawBlock(int i, int j,int cx, int cy);
 		
 		int playerCollideWithLevel(Circle* hitbox);	
 
 		void loadAssets();
-		void renderAssets(int cx, int cy);
+		void renderAssets();
+		void renderBackground();
 };

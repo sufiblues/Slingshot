@@ -8,6 +8,9 @@ Level::Level(int n, int r,int c){
 	rows = r;
 	columns = c;
 	normalized = n;
+ 	level_center = glm::vec2(columns*normalized/2, rows*normalized/2);
+	
+
 
 	for (int i =0;i<rows;i++){
 		std::vector<int> temp;
@@ -58,24 +61,30 @@ void Level::loadAssets(){
 	TextureID background = {SDL_Rect{0,0,normalized*columns,normalized*rows}, "bg"};	
 	insertTexture("bg", "asset/textures/smash-3.jpg", &background.src);
 	setTextureID(&background, "bg");
+	renderable.push_back(background);
 }
 
+/*
 void Level::renderAssets(int cx , int cy){
 	for (int i = 0; i < renderable.size(); i++){
 		RenderTextureID(&renderable[i], camera.x, camera.y);
 	}
 }
-
+*/
 void Level::drawBlock(int rp, int cp, int cx, int cy){
 	SDL_SetRenderDrawColor(Renderer, 0, 255, 100, 255);
 	SDL_Rect temp = {cp*normalized -camera.x , rp*normalized -camera.y, normalized, normalized};
 	SDL_RenderFillRect(Renderer, &temp);	
 }
 
-void Level::renderBlocks(int cx, int cy){
+void Level::renderBlocks(){
 	for (int i = 0; i < activeblocks.size(); i++){
-		drawBlock(activeblocks[i].first,activeblocks[i].second,cx,cy);
+		drawBlock(activeblocks[i].first,activeblocks[i].second,camera.x,camera.y);
 	}
+}
+
+void Level::renderBackground(){
+	RenderTextureID(&renderable[0], level_center );
 }
 
 int Level::playerCollideWithLevel(Circle* hitbox){

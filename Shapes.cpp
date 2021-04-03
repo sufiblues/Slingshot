@@ -57,6 +57,43 @@ int directionOfHit(Circle* circle, Rectangle* rect) {
     return 0;
 }
 
+/** [0:NONE] [1:TOP] [2:BOTTOM] [3:LEFT] [4:RIGHT] */
+int collisionRectangleAndRectangle(Rectangle *a, Rectangle *b){
+    int w = (a->width + b->width)/2;
+    int h = (a->height + b->height)/2;
+    int dx = a->center[0] - b->center[0];
+    int dy = a->center[1] - b->center[1];
+
+    if (abs(dx) <= w && abs(dy) <= h){
+       int wy = w * dy;
+       int hx = h * dx;
+       if (wy > hx){
+           if (wy > -hx){
+               return 1;
+           }
+           else{
+               return 2;
+           }
+       }
+       else{
+           if (wy > -hx){
+               return 3;
+           }
+           else{
+               return 4;
+           }
+       }
+    }
+    else{
+        return 0;
+    }
+
+
+
+    
+    
+}
+
 void RenderShape(Circle* circle, SDL_Color color) {
     SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
 

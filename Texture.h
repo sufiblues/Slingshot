@@ -5,12 +5,12 @@
 #include <string>
 #include "AssetManager.h"
 #include "Shapes.h"
-
+#include "Utils.h"
 //renamme to id
 typedef struct TextureID {
 	SDL_Rect src;
 	std::string name;
-};
+}TextureID;
 
 void RenderTextureID(TextureID* tid, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 //this helps match up the hitbox and the sprite clip

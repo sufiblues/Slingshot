@@ -6,6 +6,7 @@ const int LEVEL_WIDTH = normalized_tile * 32;
 
 
 User p;
+User m;
 
 /*~~~~Platforms for player to jump around on~~~~*/
 Level one(normalized_tile, 18,32);
@@ -14,21 +15,26 @@ Level one(normalized_tile, 18,32);
 //TODO: Figure out a better way to organize this data so it is available in the render loop
 TextureID chars;
 TextureID background;
+TextureID monster;
 
 void loadAssets(){
     //load textures
     
     insertTexture("chars", "assets/textures/char_test/idle0001.png");
     setTextureID(&chars, "chars");
+    insertTexture("monster", "assets/textures/logolight.png");
+    setTextureID(&monster, "monster");
+
     one.loadAssets();
-    /*
+    
+    
     background.src.x = 0;
     background.src.y = 0;
     background.src.w = LEVEL_WIDTH;
     background.src.h = LEVEL_HEIGHT;
     insertTexture("bg", "assets/textures/smash-3.jpg", &background.src); 
     setTextureID(&background, "bg");
-    */
+    
 }
 
 
@@ -50,7 +56,9 @@ void engineStart(){
 
     p.hitbox.center[0] = LEVEL_WIDTH / 2;
     p.hitbox.center[1] = LEVEL_HEIGHT / 2;
-
+    
+    m.hitbox.center[0] = normalized_tile * 1;
+    m.hitbox.center[1] = normalized_tile * 10;
 
 
 	int frame_start;
@@ -106,19 +114,12 @@ void update(){
     }
 
     
-    int flag = one.playerCollideWithLevel(&p.hitbox);
      
-    if (INPUTS.left && flag != 1) {
+    if (INPUTS.left ) {
         addMomentum(&p.physics, glm::vec2(-4, 0));
     }
-    if (INPUTS.right && flag != 2) {
+    if (INPUTS.right ) {
         addMomentum(&p.physics, glm::vec2(4, 0));
-    }
-    if (flag == 1){
-        removeHorizontalMomentum(&p.physics);
-    }
-    if (flag == 2){
-        removeHorizontalMomentum(&p.physics);
     }
     if (!p.on_ground && !p.gravity_applied) {
 
@@ -155,20 +156,19 @@ void render(){
 
     SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 0);
     SDL_RenderClear(Renderer);
+    
+    one.renderBackground();
 
     //RenderTextureID(&background,0,0, &camera);
 
-    glm::vec2 something = glm::vec2(p.hitbox.center[0] - camera.x, p.hitbox.center[1] - camera.y);
-
-    //RenderTextureID(&chars,something ); 
-    RenderTextureID(&chars, 0, 0, &camera);
+    RenderTextureID(&chars,p.hitbox.center ); 
+    //RenderTextureID(&monster, something2);
     RenderShape(&p.hitbox,red,camera.x,camera.y);
     
      
     one.showGridLines(camera.x, camera.y);
-    one.renderBlocks(camera.x, camera.y);
-    one.renderAssets(camera.x, camera.y);
-    
+    one.renderBlocks();
+     
     SDL_RenderPresent(Renderer);
 
 }
