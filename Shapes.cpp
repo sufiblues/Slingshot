@@ -70,20 +70,18 @@ int collisionRectangleAndRectangle(Rectangle* a, Rectangle b){
     if (abs(dx) <= w && abs(dy) <= h){
        int wy = w * dy;
        int hx = h * dx;
-       
-       glm::vec2 correction = glm::vec2((dx * (w-abs(dx)))/abs(dx) ,(dy * (h-abs(dy)))/abs(dy));
-       a->center = a->center + correction;
-      // printf("Correction %f, %f\n", correction[0] , correction[1]);
-       
+        
        if (wy > hx){
            if (wy > -hx){
                //return top
                //printf("TOP\n");
+               a->center[1] = a->center[1] +  ((dy * (h - abs(dy)))/abs(dy));
                return (1 << 1);
            }
            else{
                //return RIGHT
                //printf("RIGHT\n");
+                a->center[0] = a->center[0] +  ((dx * (h - abs(dx)))/abs(dx));
                return (1 << 3);
            }
        }
@@ -91,11 +89,13 @@ int collisionRectangleAndRectangle(Rectangle* a, Rectangle b){
            if (wy > -hx){
                //return left
                //printf("LEFT\n");
+               a->center[0] = a->center[0] +  ((dx * (h - abs(dx)))/abs(dx));
                return (1 << 2);
            }
            else{
                //return BOT 
                //printf("BOT\n");
+               a->center[1] = a->center[1] +  ((dy * (h - abs(dy)))/abs(dy));
                return (1 << 1);
            }
        }
