@@ -74,29 +74,27 @@ int collisionRectangleAndRectangle(Rectangle* a, Rectangle b){
        if (wy > hx){
            if (wy > -hx){
                //return top
-               //printf("TOP\n");
+               printf("TOP\n");
                a->center[1] = a->center[1] +  ((dy * (h - abs(dy)))/abs(dy));
                return (1 << 1);
            }
            else{
                //return RIGHT
                //printf("RIGHT\n");
-                a->center[0] = a->center[0] +  ((dx * (h - abs(dx)))/abs(dx));
+               //a->center[0] = a->center[0] +  ((dx * (h - abs(dx)))/abs(dx));
                return (1 << 3);
            }
        }
        else{
-           if (wy > -hx){
-               //return left
-               //printf("LEFT\n");
-               a->center[0] = a->center[0] +  ((dx * (h - abs(dx)))/abs(dx));
-               return (1 << 2);
-           }
-           else{
-               //return BOT 
-               //printf("BOT\n");
+           if (wy <= -hx){
+               //return bot
                a->center[1] = a->center[1] +  ((dy * (h - abs(dy)))/abs(dy));
                return (1 << 1);
+           }
+           else{
+               //return left  
+               a->center[0] = a->center[0] +  ((dx * (h - abs(dx)))/abs(dx));
+               return (1 << 2);
            }
        }
     }

@@ -5,12 +5,15 @@
 #include "Utils.h"
 #include "Context.h"
 #include "Texture.h"
+#include "Controller.h"
 
 typedef struct Player {
 	Rectangle hitbox;
 	PhysicsComponent physics;
 	int state;
 	TextureID image;
+	bool on_ground;
+	bool gravity_applied;
 
 }Player;
 
@@ -41,4 +44,11 @@ int stateResolution(Player* mc,  int collisions);
 /** takes player state and inputs to update physics component */
 void updatePhysics(Player* mc);
 
+/** Updates physics based on inputs and character state */
+void addInputs(Player* mc);
 
+/**update loop for player characters */
+void updatePlayer(Player * mc, std::vector<Rectangle> lvl);
+
+/**Spawn location and restart locations for player*/
+void setPlayerLocation(Player* mc, int x_cor, int y_cor);

@@ -50,11 +50,16 @@ void engineStart(){
 
     loadAssets();
     one.addFloor();
+    one.addBlock(one.rows - 2, 15);
+
+
     mc.hitbox.center = glm::vec2(LEVEL_WIDTH/4, LEVEL_HEIGHT/4 );
     mc.hitbox.width = normalized_tile;
     mc.hitbox.height = normalized_tile;
     
-
+    mc.on_ground = false;
+    mc.gravity_applied = false;
+    
 
     /*
     p.on_ground = false;
@@ -98,11 +103,9 @@ void getInput(){
 
 void update(){
 
-    camera.x = mc.hitbox.center[0] - SCREEN_WIDTH / 2;
-    camera.y = mc.hitbox.center[1] - SCREEN_HEIGHT / 2;
 
-    //Keep the camera in bounds
-    
+    updatePlayer(&mc, one.levelBlocks);
+    //Keep the camera in bounds    
     if (camera.x < 0)
     {
         camera.x = 0;
@@ -120,61 +123,6 @@ void update(){
         camera.y = LEVEL_HEIGHT - camera.h;
     }
 
-   
-    if (INPUTS.left ) {
-        addMomentum(&mc.physics, glm::vec2(-4, 0));
-    }
-    if (INPUTS.right ) {
-        addMomentum(&mc.physics, glm::vec2(4, 0));
-    }
-    if (INPUTS.down){
-        mc.physics.velocity = glm::vec2(0,10);
-    }
-    if (INPUTS.up){
-        mc.physics.velocity = glm::vec2(0, -4);
-    }
-    int colider = collisionEnumeration(&mc, one.levelBlocks);
-    
-    if(colider == BOTTOM){
-        mc.physics.velocity[1] = fmin(0, mc.physics.velocity[1]);
-        mc.physics.acceleration[1] = fmin(0, mc.physics.acceleration[1]);
-    }
-
-
-    addFriction(&mc.physics);
-    integration(&mc.hitbox.center, &mc.physics);
-    /*
-    if (!p.on_ground && !p.gravity_applied) {
-
-        //add gravity
-        addForce(&p.physics, glm::vec2(0, 1));
-        p.gravity_applied = true;
-    }
-    //todo::remove when collision with rectangles gets fleshed out
-    //if player hits the ground 
-    //need to dispace distance when hit ground
-    if (p.hitbox.center[1] + p.hitbox.radius > LEVEL_HEIGHT) {
-
-        p.on_ground = true;
-        p.hitbox.center[1] = LEVEL_HEIGHT - p.hitbox.radius;
-        //remove gravity
-        removeVerticalForce(&p.physics);
-        removeVerticalMomentum(&p.physics);
-        p.gravity_applied = false;
-    }
-
-    if (INPUTS.jump && p.on_ground) {
-
-        addMomentum(&p.physics, glm::vec2(0,-30));
-        p.on_ground = false;
-
-    }
-
-    addFriction(&p.physics);
-    integration(&p.hitbox.center, &p.physics);
-*/
-//    mc.hitbox.center = p.hitbox.center;
-//    mc.collision(one.levelBlocks);
 }
 
 void render(){
