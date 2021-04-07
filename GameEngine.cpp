@@ -57,10 +57,6 @@ void engineStart(){
     mc.hitbox.width = normalized_tile;
     mc.hitbox.height = normalized_tile;
     
-    mc.on_ground = false;
-    mc.gravity_applied = false;
-    
-
     /*
     p.on_ground = false;
     p.gravity_applied = false;

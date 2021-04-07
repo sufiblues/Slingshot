@@ -12,8 +12,6 @@ typedef struct Player {
 	PhysicsComponent physics;
 	int state;
 	TextureID image;
-	bool on_ground;
-	bool gravity_applied;
 
 }Player;
 
