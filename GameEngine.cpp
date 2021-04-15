@@ -19,27 +19,13 @@ TextureID chars;
 TextureID background;
 TextureID monster;
 
+//load assets for all entities
 void loadAssets(){
     //load textures
-    
-    insertTexture("monster", "assets/textures/logolight.png");
-    setTextureID(&monster, "monster");
-
     one.loadAssets();
 
-
-/*     
-    background.src.x = 0;
-    background.src.y = 0;
-    background.src.w = LEVEL_WIDTH;
-    background.src.h = LEVEL_HEIGHT;
-    
-    insertTexture("bg", "assets/textures/smash-3.jpg", &background.src); 
-    setTextureID(&background, "bg");
-*/  
 }
-
-
+//Game loop for emscirpten
 void gameLoop(){
     getInput();
     update();
@@ -51,46 +37,38 @@ void engineStart(){
     loadAssets();
     one.addFloor();
     one.addBlock(one.rows - 2, 15);
+    one.setSpawnPoint(3,2); 
+    one.spawnCharacter(&mc);
+    one.setEndPoint(3,9);
 
 
-    mc.hitbox.center = glm::vec2(LEVEL_WIDTH/4, LEVEL_HEIGHT/4 );
     mc.hitbox.width = normalized_tile;
     mc.hitbox.height = normalized_tile;
     
-    /*
-    p.on_ground = false;
-    p.gravity_applied = false;
-    p.hitbox.radius = normalized_tile;
-    p.hitbox.center = glm::vec2(normalized_tile * 0, normalized_tile * 0);
-    
-    p.hitbox.center[0] = LEVEL_WIDTH / 2;
-    p.hitbox.center[1] = LEVEL_HEIGHT / 2;
-    
-    m.hitbox.center[0] = normalized_tile * 1;
-    m.hitbox.center[1] = normalized_tile * 10;
-    */
-	int frame_start;
+	  int frame_start;
     int elapsed_ticks;
 
 #ifdef EMSCRIPTEN
     emscripten_set_main_loop(gameLoop, 0, 1);
 #else
-	while(!INPUTS.quit){
+	  while(!INPUTS.quit){
 		
-		frame_start = SDL_GetTicks();
+		    frame_start = SDL_GetTicks();
+        
+		    gameLoop();
+        
+        if (one.finished){
+            printf("You Won!\n");
+            break;
+        }
 
-		gameLoop();
-
-		elapsed_ticks = SDL_GetTicks() - frame_start;
+		    elapsed_ticks = SDL_GetTicks() - frame_start;
 
         if (elapsed_ticks  < FRAME_DELAY) {
             SDL_Delay(FRAME_DELAY - elapsed_ticks);
         }
-	}
+	  }
 #endif
-
-
-
 }
 
 void getInput(){
@@ -118,27 +96,20 @@ void update(){
     {
         camera.y = LEVEL_HEIGHT - camera.h;
     }
-
+    one.reachedEndPoint(&mc);
 }
 
 void render(){
-
     SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 0);
     SDL_RenderClear(Renderer);
     
     one.renderBackground();
-    
-    //RenderTextureID(&background,0,0, &camera);
-
-    //RenderTextureID(&chars,p.hitbox.center ); 
-    //RenderShape(&p.hitbox, red, camera.x, camera.y);
-    //RenderShape(&mc.hitbox, blue, camera.x, camera.y );
-     
+         
     one.showGridLines(camera.x, camera.y);
     one.renderBlocks();
     RenderShape(&mc.hitbox, blue, camera.x, camera.y);
-    SDL_RenderPresent(Renderer);
-
+    RenderShape(&one.daEnd, blue, camera.x, camera.y);
+    SDL_RenderPresent(Renderer); 
 }
 
 

@@ -4,6 +4,7 @@ Level::~Level(){
 
 }
 
+
 void Level::addFloor(){
 	for (int i = 0; i < columns; i++){
 		addBlock(rows-1, i);
@@ -15,7 +16,7 @@ Level::Level(int n, int r,int c){
 	columns = c;
 	normalized = n;
  	level_center = glm::vec2(columns*normalized/2, rows*normalized/2);
-	
+	finished = false;	
 
 
 	for (int i =0;i<rows;i++){
@@ -26,6 +27,28 @@ Level::Level(int n, int r,int c){
 		}
 		board.push_back(temp);
 	}	
+}
+
+void Level::setSpawnPoint(int r, int c){
+	spawn_point = glm::vec2(r,c);
+}
+
+void Level::setEndPoint(int r, int c){
+	end_point = glm::vec2(r, c);
+	daEnd = {glm::vec2(end_point[1] * normalized, (rows - end_point[0])* normalized) , normalized, normalized}; 
+}
+
+void Level::spawnCharacter(Player* mc){
+		mc->hitbox.center = glm::vec2(spawn_point[1] * normalized, (rows - spawn_point[0]) * normalized);
+}
+
+void Level::reachedEndPoint(Player* mc){
+	if (collisionRectangleAndRectangle(&mc->hitbox, daEnd) > 0){
+		finished = true;
+	}
+	else{
+		finished = false;
+	}
 }
 
 void Level::printBoard(){
@@ -77,16 +100,17 @@ void Level::renderAssets(int cx , int cy){
 	}
 }
 */
-void Level::drawBlock(int rp, int cp, int cx, int cy){
-	SDL_SetRenderDrawColor(Renderer, 0, 255, 100, 255);
+void Level::drawBlock(int rp, int cp, int cx, int cy, SDL_Color color){
+	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
 	SDL_Rect temp = {cp*normalized -camera.x , rp*normalized -camera.y, normalized, normalized};
 	SDL_RenderFillRect(Renderer, &temp);	
 }
 
 void Level::renderBlocks(){
 	for (int i = 0; i < activeblocks.size(); i++){
-		drawBlock(activeblocks[i].first,activeblocks[i].second,camera.x,camera.y);
+		drawBlock(activeblocks[i].first,activeblocks[i].second,camera.x,camera.y, green);
 	}
+	//drawBlock((int) end_point[0],(int) end_point[1],camera.x,camera.y,red);
 }
 
 void Level::renderBackground(){
