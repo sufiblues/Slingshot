@@ -22,8 +22,8 @@ TextureID monster;
 //load assets for all entities
 void loadAssets(){
     //load textures
-    one.loadAssets();
-
+    one.loadAssets();    
+    loadAssets(&mc);
 }
 //Game loop for emscirpten
 void gameLoop(){
@@ -33,14 +33,12 @@ void gameLoop(){
 }
 
 void engineStart(){
-
     loadAssets();
     one.addFloor();
     one.addBlock(one.rows - 2, 15);
     one.setSpawnPoint(3,2); 
     one.spawnCharacter(&mc);
     one.setEndPoint(3,9);
-
 
     mc.hitbox.width = normalized_tile;
     mc.hitbox.height = normalized_tile;
@@ -76,8 +74,6 @@ void getInput(){
 }
 
 void update(){
-
-
     updatePlayer(&mc, one.levelBlocks);
     //Keep the camera in bounds    
     if (camera.x < 0)
@@ -109,6 +105,7 @@ void render(){
     one.renderBlocks();
     RenderShape(&mc.hitbox, blue, camera.x, camera.y);
     RenderShape(&one.daEnd, blue, camera.x, camera.y);
+    render(&mc);
     SDL_RenderPresent(Renderer); 
 }
 

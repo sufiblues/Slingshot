@@ -6,13 +6,15 @@
 #include "Context.h"
 #include "Texture.h"
 #include "Controller.h"
+#include "Animation.h"
 
 typedef struct Player {
 	Rectangle hitbox;
 	PhysicsComponent physics;
 	int state;
+	int frame;
 	TextureID image;
-
+	Animation images;
 }Player;
 
 enum DirectionFlags {
@@ -32,6 +34,8 @@ enum PlayerState {
 	LANDING = 1 << 6,
 	AERIAL = 1 << 7
 };
+/** loads assets and initializes textureid */
+void loadAssets(Player* mc);
 
 /** Gets all directions of collision from the level */
 int collisionEnumeration(Player* mc, std::vector<Rectangle> lvlBlocks);
@@ -50,3 +54,6 @@ void updatePlayer(Player * mc, std::vector<Rectangle> lvl);
 
 /**Spawn location and restart locations for player*/
 void setPlayerLocation(Player* mc, int x_cor, int y_cor);
+
+/**Render image */
+void render(Player* mc);

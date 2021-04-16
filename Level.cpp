@@ -35,7 +35,7 @@ void Level::setSpawnPoint(int r, int c){
 
 void Level::setEndPoint(int r, int c){
 	end_point = glm::vec2(r, c);
-	daEnd = {glm::vec2(end_point[1] * normalized, (rows - end_point[0])* normalized) , normalized, normalized}; 
+	daEnd = {glm::vec2((end_point[1] * normalized) - normalized/2, ((rows - end_point[0])* normalized) - normalized/2) , normalized, normalized}; 
 }
 
 void Level::spawnCharacter(Player* mc){
@@ -88,7 +88,7 @@ bool Level::addBlock(int i, int j){
 
 void Level::loadAssets(){
 	TextureID background = {SDL_Rect{0,0,normalized*columns,normalized*rows}, "bg"};	
-	insertTexture("bg", "asset/textures/smash-3.jpg", &background.src);
+	insertTexture("bg", "assets/textures/smash-3.jpg", &background.src);
 	setTextureID(&background, "bg");
 	renderable.push_back(background);
 }
