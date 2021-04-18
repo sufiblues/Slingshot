@@ -69,12 +69,12 @@ void setPlayerLocation(Player* mc, int x_cord, int y_cord){
 void loadAssets(Player *mc ){
 	mc->images.name = "idle";
 	mc->frame = 0;
-	addFrame(&mc->images, "assets/textures/char_test/idle0001.png");	
-	addFrame(&mc->images, "assets/textures/char_test/idle0002.png");
-	addFrame(&mc->images, "assets/textures/char_test/idle0003.png");
-	addFrame(&mc->images, "assets/textures/char_test/idle0004.png");
-	addFrame(&mc->images, "assets/textures/char_test/idle0005.png");
-	addFrame(&mc->images, "assets/textures/char_test/idle0006.png");
+	addFrame(&mc->images,0, "assets/textures/char_test/idle0001.png");	
+	addFrame(&mc->images,3,"assets/textures/char_test/idle0002.png");
+	addFrame(&mc->images,6,"assets/textures/char_test/idle0003.png");
+	addFrame(&mc->images,9, "assets/textures/char_test/idle0004.png");
+	addFrame(&mc->images,12, "assets/textures/char_test/idle0005.png");
+	addFrame(&mc->images,15,"assets/textures/char_test/idle0006.png");
 	
 
 	//insertTexture("char", "assets/textures/char_test/idle0001.png");
@@ -82,7 +82,7 @@ void loadAssets(Player *mc ){
 }
 
 void render(Player *mc){
-	renderAnimation(&mc->images,mc->hitbox.center, mc->frame%6);	
+	renderAnimation(&mc->images,mc->hitbox.center);	
 	//RenderTextureID(&mc->image, mc->hitbox.center);
 }
 
