@@ -13,7 +13,7 @@ SDL_Window* Window;
 SDL_Renderer* Renderer;
 
 bool createContext() {
-	if (SDL_Init(SDL_INIT_VIDEO & ~SDL_INIT_HAPTIC) < 0) {
+	if (SDL_Init((SDL_INIT_VIDEO | SDL_INIT_AUDIO) & ~SDL_INIT_HAPTIC) < 0) {
 		printf("SDL could not be initialized! Error: %s\n", SDL_GetError());
 		return false;
 	}
@@ -23,6 +23,10 @@ bool createContext() {
 	}
 	if (TTF_Init() < 0) {
 		printf("TTF could not be initialized! Error %s\n", TTF_GetError());
+		return false;
+	}
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0){
+		printf("MIX could not be initialized: Error %s\n", Mix_GetError());
 		return false;
 	}
 	Window = SDL_CreateWindow("slingshot", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
@@ -46,7 +50,7 @@ void destroyContext() {
 	SDL_Quit();
 	IMG_Quit();
 	TTF_Quit();
-
+	Mix_Quit();
 	SDL_DestroyWindow(Window);
 	SDL_DestroyRenderer(Renderer);
 

@@ -19,7 +19,10 @@ int main(int argc, char* args[]) {
 	  createContext();
     engineStart();
     
+    
+    //removeTexture("bg");
+    closeManagers();
     destroyContext();
- 
+     
 	return 0;
 }

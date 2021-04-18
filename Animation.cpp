@@ -9,7 +9,7 @@ void renderAnimation(Animation * a, glm::vec2 pos){
 	else if (a->start_time == a->frame_time[a->current_frame + 1]){
 		a->current_frame += 1;
 	}
-	printf("frame debug current frame %d  frame counter %d frames_size %d frames time size %d\n", a->current_frame, a->start_time, a->frames.size(), a->frame_time.size());	
+//	printf("frame debug current frame %d  frame counter %d frames_size %d frames time size %d\n", a->current_frame, a->start_time, a->frames.size(), a->frame_time.size());	
 	RenderTextureID(&a->frames[a->current_frame],pos);
 	a->start_time += 1;
 }

@@ -24,6 +24,8 @@ void loadAssets(){
     //load textures
     one.loadAssets();    
     loadAssets(&mc);
+    insertMusic("banger", "assets/06 STARMINE.mp3");
+    insertSoundEffect("jump", "assets/soundeffect.wav");
 }
 //Game loop for emscirpten
 void gameLoop(){
@@ -39,7 +41,8 @@ void engineStart(){
     one.setSpawnPoint(3,2); 
     one.spawnCharacter(&mc);
     one.setEndPoint(3,9);
-
+    
+    Mix_PlayMusic(MusicManager["banger"], -1);
     mc.hitbox.width = normalized_tile;
     mc.hitbox.height = normalized_tile;
     

@@ -3,6 +3,8 @@
 
 std::map<std::string, SDL_Texture*> GraphicsManager;
 std::map<std::string, std::string> FontManager;
+std::map<std::string, Mix_Music*> MusicManager;
+std::map<std::string, Mix_Chunk*> SoundEffectsManager;
 
 bool insertTexture(std::string name, std::string filename) {
 
@@ -30,9 +32,7 @@ bool insertTexture(std::string name, std::string filename) {
 
 			GraphicsManager[name] = query;
 			return true;
-
 		}
-
 	}
 }
 
@@ -69,7 +69,6 @@ bool insertTexture(std::string name, std::string filename,SDL_Rect* fill) {
 	}
 }
 
-
 void removeTexture(std::string name) {
 	SDL_DestroyTexture(GraphicsManager[name]);
 	GraphicsManager[name] = NULL;
@@ -79,7 +78,6 @@ void removeTexture(std::string name) {
 SDL_Texture* queryTexture(std::string name) {
 	SDL_Texture* query = GraphicsManager[name];
 	return query;
-
 }
 
 void printTextureDimensions(std::string name) {
@@ -94,4 +92,91 @@ void printTextureDimensions(std::string name) {
 	}
 }
 
+void closeGraphicsManager(){
+	std::vector<std::string> key_names;
+	for (auto const& pair:GraphicsManager ){
+		key_names.push_back(pair.first);	
+	}
+	for (int i = 0; i < key_names.size(); i++){
+  	removeTexture(key_names[i]);
+	}
+
+}
+
+bool insertMusic(std::string name, std::string filepath){
+	Mix_Music* mus = Mix_LoadMUS(filepath.c_str());
+	
+	if (mus == NULL){
+		printf("Unable to load music %s! SDL_Mix Error: %s\n", filepath.c_str(), Mix_GetError());
+		return false;
+  }
+	
+	MusicManager[name] = mus;
+	mus = NULL;
+	return true;
+}
+
+Mix_Music* queryMusic(std::string name){
+	Mix_Music* query = MusicManager[name];
+	return query;
+}
+
+void removeMusic(std::string name){
+	Mix_FreeMusic(MusicManager[name]);
+	MusicManager[name] = NULL;
+	MusicManager.erase(name);
+}
+//TODO finish implementing close functions for asset managers
+void closeMusicManager(){
+	
+	std::vector<std::string> key_names;
+	for (auto const& pair:MusicManager ){
+		key_names.push_back(pair.first);	
+	}
+	for (int i = 0; i < key_names.size(); i++){
+  	removeMusic(key_names[i]);
+	}
+}
+
+
+bool insertSoundEffect(std::string name, std::string filepath){
+	Mix_Chunk* loadedSound = Mix_LoadWAV(filepath.c_str());
+	
+	if (loadedSound == NULL){
+		printf("Unable to load sound effect %s! SDL_Mix Error: %s\n", filepath.c_str(), Mix_GetError());
+		return false;
+  }
+	
+	SoundEffectsManager[name] = loadedSound;
+	loadedSound = NULL;
+	return true;
+}
+
+Mix_Chunk* querySoundEffect(std::string name){
+	Mix_Chunk* query = SoundEffectsManager[name];
+	return query;
+}
+
+void removeSoundEffect(std::string name){
+	Mix_FreeChunk(SoundEffectsManager[name]);
+	SoundEffectsManager[name] = NULL;
+	SoundEffectsManager.erase(name);
+}
+//TODO finish implementing close functions for asset managers
+void closeSoundEffectsManager(){	
+
+	std::vector<std::string> key_names;
+	for (auto const& pair:SoundEffectsManager ){
+		key_names.push_back(pair.first);	
+	}
+	for (int i = 0; i < key_names.size(); i++){
+  	removeSoundEffect(key_names[i]);
+	}
+}
+
+void closeManagers(){
+	closeGraphicsManager();
+	closeMusicManager();
+	closeSoundEffectsManager();
+}
 
