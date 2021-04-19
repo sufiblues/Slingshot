@@ -2,15 +2,14 @@
 
 #ifndef _ASSETMANAGER_H
 #define _ASSETMANAGER_H
-
 #include <map>
 #include <vector>
 #include "Context.h"
+#include "Utils.h"
 
 extern std::map<std::string, SDL_Texture*> GraphicsManager; 
-//ex. FontManager['helvetica', "path/to/helvetica-font"]
-//todo
-extern std::map<std::string, std::string> FontManager;
+//font manager
+extern std::map<std::string, TTF_Font*> FontsManager;
 //music manager
 extern std::map<std::string, Mix_Music*> MusicManager;
 extern std::map<std::string, Mix_Chunk*> SoundEffectsManager;
@@ -31,6 +30,14 @@ bool insertSoundEffect(std::string name, std::string filepath);
 Mix_Chunk* querySoundEffect(std::string name);
 void removeSoundEffect(std::string name);
 void closeSoundEffectsManager();
+
+/** ex. "helvetica" "file/to/helvetica.ttf" "12" will set "helvetica_12" int the font manager */
+bool insertFont(std::string name, std::string filepath,int size);
+TTF_Font* queryFont(std::string name);
+void removeFont(std::string name);
+void closeFontsManager();
+
+void createTextureFromFont(std::string name, std::string nameOfFont, std::string text);
 
 void closeManagers();
 

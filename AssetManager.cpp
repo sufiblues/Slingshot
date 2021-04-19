@@ -2,7 +2,7 @@
 
 
 std::map<std::string, SDL_Texture*> GraphicsManager;
-std::map<std::string, std::string> FontManager;
+std::map<std::string, TTF_Font*> FontsManager;
 std::map<std::string, Mix_Music*> MusicManager;
 std::map<std::string, Mix_Chunk*> SoundEffectsManager;
 
@@ -151,7 +151,6 @@ bool insertSoundEffect(std::string name, std::string filepath){
 	loadedSound = NULL;
 	return true;
 }
-
 Mix_Chunk* querySoundEffect(std::string name){
 	Mix_Chunk* query = SoundEffectsManager[name];
 	return query;
@@ -162,7 +161,6 @@ void removeSoundEffect(std::string name){
 	SoundEffectsManager[name] = NULL;
 	SoundEffectsManager.erase(name);
 }
-//TODO finish implementing close functions for asset managers
 void closeSoundEffectsManager(){	
 
 	std::vector<std::string> key_names;
@@ -174,9 +172,74 @@ void closeSoundEffectsManager(){
 	}
 }
 
+
+bool insertFont(std::string name, std::string filepath, int size){
+	TTF_Font* loadedFont = TTF_OpenFont(filepath.c_str(), size);
+	std::string new_name = name + "_" + std::to_string(size);	
+	if (loadedFont == NULL){
+		printf("Unable to load Font %s! SDL_ttf Error: %s\n", filepath.c_str(), TTF_GetError());
+		return false;
+  }
+
+	FontsManager[new_name] = loadedFont;
+	loadedFont = NULL;
+	return true;
+}
+
+TTF_Font* queryFont(std::string name){
+	TTF_Font* query = FontsManager[name];
+	return query;
+}
+
+void removeFont(std::string name){
+	TTF_CloseFont(FontsManager[name]);
+	FontsManager[name] = NULL;
+	FontsManager.erase(name);
+}
+
+void closeFontsManager(){	
+	std::vector<std::string> key_names;
+	for (auto const& pair:FontsManager ){
+		key_names.push_back(pair.first);	
+	}
+
+	for (int i = 0; i < key_names.size(); i++){
+		removeFont(key_names[i]);
+	}
+}
+//need to add another argument for color
+void createTextureFromFont(std::string name, std::string nameOfFont, std::string text){
+	TTF_Font* font = FontsManager[nameOfFont];
+	SDL_Texture* mTexture;
+
+	if (font == NULL){
+		printf("font %s not found in FontsManager\n", nameOfFont.c_str());
+		return;
+	}
+	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), red);
+	if (textSurface == NULL){
+		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+		return;
+	}
+	else{
+		mTexture = SDL_CreateTextureFromSurface(Renderer, textSurface);
+		if (mTexture == NULL){	
+			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+			return;
+		}
+		else{
+			GraphicsManager[name] = mTexture;
+			SDL_FreeSurface(textSurface);
+			textSurface = NULL;
+		}
+	}
+}
+
+
 void closeManagers(){
 	closeGraphicsManager();
 	closeMusicManager();
 	closeSoundEffectsManager();
+	closeFontsManager();
 }
 

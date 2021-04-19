@@ -47,7 +47,6 @@ void addInputs(Player* mc){
 	//if player is not grounded then add gravity
 	if((mc->state & GROUNDED) == 0){
 		addForce(&mc->physics, glm::vec2(0,1));
-		Mix_PlayChannel(-1, SoundEffectsManager["jump"],0);
 	}
 	else{
 		//if grounded and user inputs jump

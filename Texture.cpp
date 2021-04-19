@@ -1,6 +1,6 @@
 #include "Texture.h"
 //TODO lowercase r 
-void RenderTextureID(TextureID* tid, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip){
+void RenderTextureID(TextureID* tid, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip, bool FIXED_LOCATION){
 	
 	//set the renderquad to the whole texture
 	SDL_Rect renderQuad = { x, y, tid->src.w, tid->src.h };
@@ -20,12 +20,15 @@ void RenderTextureID(TextureID* tid, int x, int y, SDL_Rect* clip, double angle,
 	
 }
 
-void RenderTextureID(TextureID* tid, glm::vec2 pos, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+void RenderTextureID(TextureID* tid, glm::vec2 pos, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip, bool FIXED_LOCATION) {
+	
 
 	//set the renderquad to the whole texture
 	SDL_Rect renderQuad = {(int)(pos[0] - camera.x - tid->src.w/2), (int)(pos[1] - camera.y  - tid->src.h/2), tid->src.w, tid->src.h };
 	//printf("renderQuad: (%d,%d,%d,%d) \n", renderQuad.x ,renderQuad.y,renderQuad.w, renderQuad.h);
-
+	if (FIXED_LOCATION){
+		renderQuad = {(int)(pos[0]), (int)(pos[1]), tid->src.w, tid->src.h };
+	}
 
 	//Set clip rendering dimensions if any
 	if (clip != NULL)

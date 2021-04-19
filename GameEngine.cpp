@@ -18,6 +18,9 @@ Level one(normalized_tile, 18,32);
 TextureID chars;
 TextureID background;
 TextureID monster;
+TextureID text;
+
+SDL_Texture* test;
 
 //load assets for all entities
 void loadAssets(){
@@ -26,7 +29,13 @@ void loadAssets(){
     loadAssets(&mc);
     insertMusic("banger", "assets/06 STARMINE.mp3");
     insertSoundEffect("jump", "assets/soundeffect.wav");
+    insertFont("font","assets/font.ttf", 24);
+    createTextureFromFont("testTitle", "font_24", "Hello World");
+    test = queryTexture("testTitle");
+    setTextureID(&text, "testTitle");
+
 }
+
 //Game loop for emscirpten
 void gameLoop(){
     getInput();
@@ -42,7 +51,7 @@ void engineStart(){
     one.spawnCharacter(&mc);
     one.setEndPoint(3,9);
     
-    Mix_PlayMusic(MusicManager["banger"], -1);
+   // Mix_PlayMusic(MusicManager["banger"], -1);
     mc.hitbox.width = normalized_tile;
     mc.hitbox.height = normalized_tile;
     
@@ -109,6 +118,8 @@ void render(){
     RenderShape(&mc.hitbox, blue, camera.x, camera.y);
     RenderShape(&one.daEnd, blue, camera.x, camera.y);
     render(&mc);
+
+    RenderTextureID( &text, glm::vec2(9,9) , NULL, 0.0,  NULL, SDL_FLIP_NONE, true);
     SDL_RenderPresent(Renderer); 
 }
 
