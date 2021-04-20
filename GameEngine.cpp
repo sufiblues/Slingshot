@@ -43,17 +43,34 @@ void gameLoop(){
     render();
 }
 
+void initLevelOne(){
+    one.addFloor();
+    one.addBlock(one.rows - 2, 3);
+    one.addBlock(one.rows - 2, 5);
+    one.addBlock(one.rows - 3,6);
+    one.addBlock(one.rows -3,7);
+    one.addHazardBlock(one.rows - 2,8);
+    one.addBlock(one.rows - 3,9);
+    one.addHazardBlock(one.rows-2,10);
+    one.addBlock(one.rows - 3,11);
+    one.addBlock(one.rows - 3,12);
+    one.addHazardBlock(one.rows - 2,13);
+    one.addBlock(one.rows - 3,14);
+    one.addBlock(one.rows - 4,15); 
+    one.setEndPoint(5,16);
+
+    one.setSpawnPoint(1,1); 
+    one.spawnCharacter(&mc);
+}
+
 void engineStart(){
     loadAssets();
-    one.addFloor();
-    one.addBlock(one.rows - 2, 15);
-    one.setSpawnPoint(3,2); 
-    one.spawnCharacter(&mc);
-    one.setEndPoint(3,9);
     
+    initLevelOne();
+
    // Mix_PlayMusic(MusicManager["banger"], -1);
-    mc.hitbox.width = normalized_tile;
-    mc.hitbox.height = normalized_tile;
+    mc.hitbox.width = normalized_tile/2;
+    mc.hitbox.height = normalized_tile*1;
     
 	  int frame_start;
     int elapsed_ticks;
@@ -64,9 +81,7 @@ void engineStart(){
 	  while(!INPUTS.quit){
 		
 		    frame_start = SDL_GetTicks();
-        
 		    gameLoop();
-        
         if (one.finished){
             printf("You Won!\n");
             break;
@@ -104,6 +119,7 @@ void update(){
     {
         camera.y = LEVEL_HEIGHT - camera.h;
     }
+    one.playerCollideWithHazards(&mc);
     one.reachedEndPoint(&mc);
 }
 

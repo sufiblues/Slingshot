@@ -17,6 +17,7 @@ class Level {
 		std::vector<std::vector<int>> board;
 		std::vector<std::pair<int,int>> activeblocks;
 		std::vector<Rectangle> levelBlocks;
+		std::vector<Rectangle> hazardBlocks;
 		std::vector<TextureID> renderable;
 		glm::vec2 spawn_point;
 		//TOOD: change this to center point to match with naming convention of other variables
@@ -36,7 +37,9 @@ class Level {
 		void reachedEndPoint(Player* mc);
 
 		bool addBlock(int i, int j);
+		bool addHazardBlock(int i , int j);
 		bool removeBlock(int i, int j);
+				
 		
 		void printBoard();	 
 		void showGridLines(int cx, int cy);
@@ -45,6 +48,8 @@ class Level {
 		void drawBlock(int i, int j,int cx, int cy, SDL_Color color);
 		
 		int playerCollideWithLevel(Circle* hitbox);	
+
+		void playerCollideWithHazards(Player* mc);
 
 		void loadAssets();
 		void renderAssets();

@@ -86,6 +86,35 @@ bool Level::addBlock(int i, int j){
 	}
 }
 
+
+bool Level::addHazardBlock(int i, int j){
+	if ((i >= rows) || (j >= columns) || i < 0 || j < 0){
+		return false;
+	}
+	if (board[i][j] != 0){
+		return false;
+	}
+	else{
+		board[i][j] = 2;
+		activeblocks.push_back(std::make_pair(i,j));
+		Rectangle temp = {glm::vec2(j*normalized + normalized/2 , i*normalized + normalized/2 ), normalized, normalized};
+		hazardBlocks.push_back(temp);
+		return true;
+	}
+}
+
+void Level::playerCollideWithHazards(Player *mc){
+	int res = 0;
+	for (int i = 0; i < hazardBlocks.size(); i++){
+		
+		res = collisionRectangleAndRectangle(&mc->hitbox,  hazardBlocks[i]) | res;
+	}
+
+	if (res){
+		spawnCharacter(mc);
+	}
+}
+
 void Level::loadAssets(){
 	TextureID background = {SDL_Rect{0,0,normalized*columns,normalized*rows}, "bg"};	
 	insertTexture("bg", "assets/textures/smash-3.jpg", &background.src);
@@ -108,7 +137,12 @@ void Level::drawBlock(int rp, int cp, int cx, int cy, SDL_Color color){
 
 void Level::renderBlocks(){
 	for (int i = 0; i < activeblocks.size(); i++){
-		drawBlock(activeblocks[i].first,activeblocks[i].second,camera.x,camera.y, green);
+		if(board[activeblocks[i].first][activeblocks[i].second] == 1){
+			drawBlock(activeblocks[i].first,activeblocks[i].second,camera.x,camera.y, green);
+		} 
+		else if(board[activeblocks[i].first][activeblocks[i].second] == 2){		
+			drawBlock(activeblocks[i].first,activeblocks[i].second,camera.x,camera.y, red);
+		}
 	}
 	//drawBlock((int) end_point[0],(int) end_point[1],camera.x,camera.y,red);
 }
