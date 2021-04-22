@@ -2,11 +2,14 @@
 
 #include <utility>
 #include <vector>
+#include <iostream>
+#include <fstream>
 #include "Texture.h"
 #include "Context.h"
 #include "Shapes.h"
 #include "Utils.h"
 #include "Player.h"
+#include "nlohmann/json.hpp"
 
 class Level {
 	public:
@@ -54,4 +57,7 @@ class Level {
 		void loadAssets();
 		void renderAssets();
 		void renderBackground();
+
+		void Serialize();
+		void Deserialize(std::string filename);
 };

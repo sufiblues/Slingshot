@@ -67,7 +67,7 @@ void engineStart(){
     loadAssets();
     
     initLevelOne();
-
+    one.Serialize();
    // Mix_PlayMusic(MusicManager["banger"], -1);
     mc.hitbox.width = normalized_tile/2;
     mc.hitbox.height = normalized_tile*1;
@@ -86,7 +86,6 @@ void engineStart(){
             printf("You Won!\n");
             break;
         }
-
 		    elapsed_ticks = SDL_GetTicks() - frame_start;
 
         if (elapsed_ticks  < FRAME_DELAY) {

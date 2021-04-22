@@ -161,3 +161,21 @@ int Level::playerCollideWithLevel(Circle* hitbox){
 	}
 	return temp;
 }
+
+void Level::Serialize(){
+	std::ofstream testfile("pretty.json");
+	nlohmann::json j;
+	j["rows"] = rows;
+	j["columns"] = columns;
+	std::string levelFormat;
+	for (int a = 0; a < board.size(); a++ ){
+		for (int b = 0; b < board[a].size(); b++){
+			levelFormat += "," + std::to_string(board[a][b]);
+		}
+		levelFormat += "\n";
+	}
+	j["board"] = levelFormat;
+	testfile << j.dump();
+
+}
+
