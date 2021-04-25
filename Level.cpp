@@ -179,3 +179,13 @@ void Level::Serialize(){
 
 }
 
+void Level::Deserialize(std::string filename){
+//get input file
+	std::ifstream inputfile(filename);
+	nlohmann::json jf = nlohmann::json::parse(inputfile);
+//construct level from input file
+	rows = jf["rows"];
+	columns = jf["columns"];
+	std::string levelFormat = jf["board"];
+	std::cout << levelFormat;		
+}

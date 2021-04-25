@@ -68,7 +68,8 @@ void engineStart(){
     
     initLevelOne();
     one.Serialize();
-   // Mix_PlayMusic(MusicManager["banger"], -1);
+    one.Deserialize("pretty.json");
+    // Mix_PlayMusic(MusicManager["banger"], -1);
     mc.hitbox.width = normalized_tile/2;
     mc.hitbox.height = normalized_tile*1;
     
