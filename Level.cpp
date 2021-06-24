@@ -43,7 +43,7 @@ void Level::spawnCharacter(Player* mc){
 }
 
 void Level::reachedEndPoint(Player* mc){
-	if (collisionRectangleAndRectangle(&mc->hitbox, daEnd) > 0){
+	if (collisionRectangleAndRectangle(mc->hitbox, daEnd) > 0){
 		finished = true;
 	}
 	else{
@@ -107,7 +107,7 @@ void Level::playerCollideWithHazards(Player *mc){
 	int res = 0;
 	for (int i = 0; i < hazardBlocks.size(); i++){
 		
-		res = collisionRectangleAndRectangle(&mc->hitbox,  hazardBlocks[i]) | res;
+		res = collisionRectangleAndRectangle(mc->hitbox,  hazardBlocks[i]) | res;
 	}
 
 	if (res){

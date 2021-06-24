@@ -29,7 +29,7 @@ int getTopY(Rectangle* rect);
 int getBottomY(Rectangle* rect);
 
 bool collisionCircleAndRectangle(Circle *circle, Rectangle *rect);
-int collisionRectangleAndRectangle(Rectangle* a, Rectangle b);
+int collisionRectangleAndRectangle(Rectangle a, Rectangle b);
 bool collisionPointInShape(Point *p, Circle *circle);
 bool collisionPointInShape(Point *p, Rectangle *rectangle);
 /*** [0:NONE] [1:LEFT] [2:RIGHT] [3:TOP] [4:DOWN] [5:CORNER] ***/

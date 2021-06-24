@@ -61,11 +61,11 @@ int directionOfHit(Circle* circle, Rectangle* rect) {
 
 /** [0:NONE] [1:TOP] [2:BOTTOM] [3:LEFT] [4:RIGHT] */
 //TODO: Fix the pointer shit to this function
-int collisionRectangleAndRectangle(Rectangle* a, Rectangle b){
-    int w = (a->width + b.width)/2;
-    int h = (a->height + b.height)/2;
-    int dx = a->center[0] - b.center[0];
-    int dy = a->center[1] - b.center[1];
+int collisionRectangleAndRectangle(Rectangle a, Rectangle b){
+    int w = (a.width + b.width)/2;
+    int h = (a.height + b.height)/2;
+    int dx = a.center[0] - b.center[0];
+    int dy = a.center[1] - b.center[1];
 
     if (abs(dx) <= w && abs(dy) <= h){
        int wy = w * dy;
@@ -75,12 +75,12 @@ int collisionRectangleAndRectangle(Rectangle* a, Rectangle b){
            if (wy > -hx){
                //return top
                printf("TOP\n");
-               a->center[1] = a->center[1] +  ((dy * (h - abs(dy)))/abs(dy));
+	       //a->center[1] = a->center[1] +  ((dy * (h - abs(dy)))/abs(dy));
                return (1 << 1);
            }
            else{
                //return RIGHT
-               //printf("RIGHT\n");
+               printf("RIGHT\n");
                //a->center[0] = a->center[0] +  ((dx * (h - abs(dx)))/abs(dx));
                return (1 << 3);
            }
@@ -88,12 +88,14 @@ int collisionRectangleAndRectangle(Rectangle* a, Rectangle b){
        else{
            if (wy <= -hx){
                //return bot
-               a->center[1] = a->center[1] +  ((dy * (h - abs(dy)))/abs(dy));
+               printf("BOTTOM\n");
+	       //a->center[1] = a->center[1] +  ((dy * (h - abs(dy)))/abs(dy));
                return (1 << 1);
            }
            else{
                //return left  
-               a->center[0] = a->center[0] +  ((dx * (h - abs(dx)))/abs(dx));
+	       printf("LEFT\n");
+               //a->center[0] = a->center[0] +  ((dx * (h - abs(dx)))/abs(dx));
                return (1 << 2);
            }
        }

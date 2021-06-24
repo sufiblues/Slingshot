@@ -5,7 +5,7 @@ int collisionEnumeration(Player* mc ,std::vector<Rectangle>  lvlBlocks){
 	int res = 0;
 	for (int i = 0; i < lvlBlocks.size(); i++){
 		
-		res = collisionRectangleAndRectangle(&mc->hitbox,  lvlBlocks[i]) | res;
+		res = collisionRectangleAndRectangle(mc->hitbox,  lvlBlocks[i]) | res;
 	}
 	return res;
 }
