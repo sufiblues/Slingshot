@@ -163,6 +163,38 @@ void RenderShape(Circle* circle, SDL_Color color, int camera_x, int camera_y) {
     }
 }
 
+glm::vec2 Cast(Point center, glm::vec2 ray, Line boundry){
+	int x1 = center.Pos[0];
+	int x2 = center.Pos[0] + ray[0];
+	int y1 = center.Pos[1];
+	int y2 = center.Pos[1] + ray[1];
+
+	int x3 = boundry.one.Pos[0];
+	int x4 = boundry.two.Pos[0];
+	int y3 = boundry.one.Pos[1];
+	int y4 = boundry.two.Pos[1];
+
+	float den = (x1 - x2) * ( y3-y4) - (y1-y2) * (x3 - x4);
+	if (den == 0){
+	    return glm::vec2(-1,-1);
+	}
+
+	float t = ((x1 - x3)*(y3-y4) - (y1 - y3) * (x3 - x4))/ den;
+        float u = -((x1 - x2)*(y1-y3) - (y1 - y2) * (x1 - x3))/ den;
+	
+	    //intersection.Pos[0] = x1 + t *(x2-x1);
+	    //intersection.Pos[1] = y1 + t * (x2-x1);
+	
+	return glm::vec2(t,u);
+}
+
+void RenderShape(Line line, SDL_Color color){
+    SDL_SetRenderDrawColor(Renderer, color.r,color.g,color.b, color.a);
+
+    SDL_RenderDrawLine(Renderer, line.one.Pos[0],line.one.Pos[1],line.two.Pos[0],line.two.Pos[1]);
+}
+
+
 void RenderShape(Rectangle* rectangle, SDL_Color color, int camera_x, int camera_y){
     SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b,color.a);
 
@@ -190,10 +222,10 @@ void debugInfo(Rectangle rectangle, bool coordinates) {
     }
     else {
         printf("Center = [%d, %d] | Width = %d | Height = %d\n", (int)(rectangle.center[0]), (int)(rectangle.center[1]), rectangle.width, rectangle.height);
-
     }
-
 }
+
+
 
 void debugInfo(Circle circle) {
     printf("Center = [%d, %d] | Radius = %d\n", circle.center[0], circle.center[1], circle.radius);

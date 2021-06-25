@@ -1,5 +1,13 @@
 #include "Physics.h"
 
+
+void projection(Rectangle primary, PhysicsComponent p, Rectangle secondary){
+    Rectangle collidable = {glm::vec2(primary.center[0]+p.velocity[0]/2,primary.center[1]+p.velocity[1]/2), p.velocity[0],p.velocity[1]};
+    collisionRectangleAndRectangle(collidable, secondary);
+	
+}
+
+
 void integration(glm::vec2 *pos, PhysicsComponent* object) {
 	object->velocity += object->acceleration;
 	*pos = *pos + object->velocity;

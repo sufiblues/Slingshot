@@ -8,6 +8,7 @@ const int LEVEL_WIDTH = normalized_tile * 32;
 
 Rectangle primary;
 Rectangle secondary; 
+Rectangle collidable;
 
 /*Create TIDs for future textures*/
 //TODO: Figure out a better way to organize this data so it is available in the render loop
@@ -38,15 +39,24 @@ void gameLoop(){
     render();
 }
 
+Line l;
+Line wall;
 //TODO: easier way to initialize rectangles...
 void engineStart(){
-    primary.center = glm::vec2(SCREEN_WIDTH/2,SCREEN_HEIGHT/2);
+    primary.center = glm::vec2(normalized_tile*2,normalized_tile*5);
     primary.width = 50;
     primary.height = 50;
-	
-    secondary.center = glm::vec2(normalized_tile * 10, normalized_tile*2);
-    secondary.width = 50;
-    secondary.height = 50;
+
+    l.one.Pos = primary.center;
+    l.two.Pos = l.one.Pos + glm::vec2(100,0);
+    
+    
+    secondary.center = glm::vec2(normalized_tile * 10, normalized_tile*3);
+    secondary.width = normalized_tile*2;
+    secondary.height = normalized_tile*5;
+
+    wall.one.Pos = secondary.center;
+    wall.two.Pos = wall.one.Pos + glm::vec2(0,secondary.height);
 
     int frame_start;
     int elapsed_ticks;
@@ -68,6 +78,7 @@ void engineStart(){
     }
 #endif
 }
+
 
 
 void update(){
@@ -104,8 +115,26 @@ void update(){
     	primary.center[1] += 5;
     }
 
-	
-    collisionRectangleAndRectangle(primary, secondary);
+    PhysicsComponent p = {glm::vec2(100,0)}; 
+    if (INPUTS.jump == 1){
+	//collidable = {glm::vec2(primary.center[0]+p.velocity[0]/2,primary.center[1]+p.velocity[1]/2), p.velocity[0],p.velocity[1]};
+    	printf("jump\n");
+	integration(&primary.center, &p);
+    	
+    	l.one.Pos = primary.center;
+    	l.two.Pos = l.one.Pos + glm::vec2(100,0);
+    }
+    Point center;
+    center.Pos = primary.center;
+
+    glm::vec2 inter = Cast(center, p.velocity, wall);
+    
+    printf("%.2f %.2f\n", inter[0], inter[1]);
+ 
+
+    
+
+
     
 
 }
@@ -113,10 +142,11 @@ void update(){
 void render(){
     SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 0);
     SDL_RenderClear(Renderer);
-    
+    //create a viz for the distance of collidable
     RenderShape(&primary,red);
-    RenderShape(&secondary, green);     
-
+    //RenderShape(&secondary, green);     
+    RenderShape(l, blue);
+    RenderShape(wall, green);
     SDL_RenderPresent(Renderer); 
 }
 

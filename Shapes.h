@@ -12,6 +12,11 @@ typedef struct Point {
 	glm::vec2 Pos;
 } Point;
 
+typedef struct Line {
+	Point one;
+	Point two;
+} Line;
+
 typedef struct Circle {
 	glm::vec2 center;
 	int radius;
@@ -22,6 +27,8 @@ typedef struct Rectangle {
 	int width;
 	int height;
 } Rectangle;
+/*** return t,u which are used to figure out intersection on the two line segments ***/
+glm::vec2 Cast(Point center, glm::vec2 ray, Line boundry);
 
 int getLeftX(Rectangle* rect);
 int getRightX(Rectangle* rect);
@@ -39,6 +46,7 @@ void debugInfo(Rectangle rectangle,bool coordinates = false);
 void debugInfo(Circle circle);
 void debugInfo(Point point);
 
+void RenderShape(Line line, SDL_Color color);
 void RenderShape(Circle* circle,SDL_Color color);
 void RenderShape(Rectangle* rectangle, SDL_Color color);
 void RenderShape(Circle* circle, SDL_Color color, int camera_x, int camera_y);

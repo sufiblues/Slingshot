@@ -14,6 +14,9 @@ typedef struct PhysicsComponent {
 	glm::vec2 acceleration;
 } PhysicsComponent;
 
+
+void projection(Rectangle primary, PhysicsComponent p, Rectangle secondary);
+
 void integration(glm::vec2 *pos, PhysicsComponent *object);
 //void gravity(PhysicsComponent* object);
 void addForce(PhysicsComponent* object, glm::vec2 force);
