@@ -2,19 +2,20 @@
 #ifndef _SHAPES_H
 #define _SHAPES_H
 
+#include "Utils.h"
 #include "glm/glm.hpp"
 #include "glm/vec2.hpp"
 #include "Context.h"
 #include <stdio.h>
-
+#include <vector>
 
 typedef struct Point {
 	glm::vec2 Pos;
 } Point;
 
 typedef struct Line {
-	Point one;
-	Point two;
+	glm::vec2 one;
+	glm::vec2 two;
 } Line;
 
 typedef struct Circle {
@@ -28,28 +29,20 @@ typedef struct Rectangle {
 	int height;
 } Rectangle;
 /*** return t,u which are used to figure out intersection on the two line segments ***/
-glm::vec2 Cast(Point center, glm::vec2 ray, Line boundry);
+glm::vec2 Cast(glm::vec2 center, glm::vec2 ray, Line boundry);
+glm::vec2 Cast(Rectangle rect, glm::vec2 ray, Line boundry);
 
-int getLeftX(Rectangle* rect);
-int getRightX(Rectangle* rect);
-int getTopY(Rectangle* rect);
-int getBottomY(Rectangle* rect);
+Line shift(Line line, glm::vec2 vector);
 
-bool collisionCircleAndRectangle(Circle *circle, Rectangle *rect);
+bool collisionCircleAndRectangle(Circle circle, Rectangle rect);
 int collisionRectangleAndRectangle(Rectangle a, Rectangle b);
-bool collisionPointInShape(Point *p, Circle *circle);
-bool collisionPointInShape(Point *p, Rectangle *rectangle);
-/*** [0:NONE] [1:LEFT] [2:RIGHT] [3:TOP] [4:DOWN] [5:CORNER] ***/
-int directionOfHit(Circle *circle, Rectangle *rect);
 
-void debugInfo(Rectangle rectangle,bool coordinates = false);
-void debugInfo(Circle circle);
-void debugInfo(Point point);
+
 
 void RenderShape(Line line, SDL_Color color);
-void RenderShape(Circle* circle,SDL_Color color);
-void RenderShape(Rectangle* rectangle, SDL_Color color);
-void RenderShape(Circle* circle, SDL_Color color, int camera_x, int camera_y);
-void RenderShape(Rectangle* rectangle, SDL_Color color, int camera_x, int camera_y);
+void RenderShape(Circle circle,SDL_Color color);
+void RenderShape(Rectangle rectangle, SDL_Color color);
+void RenderShape(Circle circle, SDL_Color color, int camera_x, int camera_y);
+void RenderShape(Rectangle rectangle, SDL_Color color, int camera_x, int camera_y);
 
 #endif // !_SHAPES_H

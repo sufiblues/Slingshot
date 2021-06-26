@@ -15,7 +15,7 @@ typedef struct PhysicsComponent {
 } PhysicsComponent;
 
 
-void projection(Rectangle primary, PhysicsComponent p, Rectangle secondary);
+
 
 void integration(glm::vec2 *pos, PhysicsComponent *object);
 //void gravity(PhysicsComponent* object);

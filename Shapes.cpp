@@ -1,61 +1,5 @@
 #include "Shapes.h"
 
-int getLeftX(Rectangle* rect) {
-    return rect->center[0] - rect->width / 2;
-}
-int getRightX(Rectangle* rect) {
-    return rect->center[0] + rect->width / 2;
-}
-int getTopY(Rectangle* rect) {
-    return rect->center[1] - rect->height / 2;
-}
-int getBottomY(Rectangle* rect) {
-    return rect->center[1] + rect->height / 2;
-}
-
-/* [0:NONE] [1:LEFT] [2:RIGHT] [3:TOP] [4:DOWN] [5:CORNER] */
-int directionOfHit(Circle* circle, Rectangle* rect) {
-    //initialize the x and y position of the closePoint vector
-    glm::vec2 close_point = circle->center;
-    int flag = 0;
-
-    //if the circle's center point is less than the left edge of the rectangle
-    if (circle->center[0] < getLeftX(rect)) {
-        close_point[0] = getLeftX(rect);
-        flag = 1;
-    }
-    //if circle center is on right side
-    else if (circle->center[0] > getRightX(rect)) {
-        close_point[0] = getRightX(rect);
-        flag = 2;
-    }
-    //if circle is on top
-    if (circle->center[1] < getTopY(rect)) {
-        close_point[1] = getTopY(rect);
-        flag = 3;
-    }
-    //bottom edge
-    else if (circle->center[1] > getBottomY(rect)) {
-        close_point[1] = getBottomY(rect);
-        flag = 4;
-    }
-
-    //hits edge 
-    if (circle->center[0] != close_point[0] && circle->center[1] != close_point[1]) {
-        flag = 5;
-    }
-
-    glm::vec2 distance = circle->center - close_point;
-
-    if (glm::length(distance) < circle->radius) {
-        //make sure that the obj is not inside the platform when the physics step is applied. 
-        glm::vec2 penetration_depth = glm::normalize(distance) * (circle->radius - glm::length(distance));
-        circle->center += penetration_depth * 2.0f;
-        return flag;
-    }
-
-    return 0;
-}
 
 
 
@@ -105,76 +49,78 @@ int collisionRectangleAndRectangle(Rectangle a, Rectangle b){
     }  
 }
 
-void RenderShape(Circle* circle, SDL_Color color) {
+void RenderShape(Circle circle, SDL_Color color) {
     SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
 
     int sides = 20;
     if (sides == 0)
     {
-        sides = M_PI * circle->radius;
+        sides = M_PI * circle.radius;
     }
 
     float d_a = 2 * M_PI / sides,
         angle = d_a;
 
     glm::vec2 start, end;
-    end.x = circle->radius;
+    end.x = circle.radius;
     end.y = 0.0f;
-    end = end + circle->center;
+    end = end + circle.center;
     for (int i = 0; i != sides; i++)
     {
         start = end;
-        end.x = cos(angle) * circle->radius;
-        end.y = sin(angle) * circle->radius;
-        end = end + circle->center;
+        end.x = cos(angle) * circle.radius;
+        end.y = sin(angle) * circle.radius;
+        end = end + circle.center;
         angle += d_a;
         SDL_RenderDrawLine(Renderer, start[0], start[1], end[0], end[1]);
     }
 }
 
-void RenderShape(Circle* circle, SDL_Color color, int camera_x, int camera_y) {
+void RenderShape(Circle circle, SDL_Color color, int camera_x, int camera_y) {
     SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
 
-    glm::vec2 cam_center = circle->center;
+    glm::vec2 cam_center = circle.center;
     cam_center[0] = cam_center[0] - camera_x;
     cam_center[1] = cam_center[1] - camera_y;
 
     int sides = 10;
     if (sides == 0)
     {
-        sides = M_PI * circle->radius;
+        sides = M_PI * circle.radius;
     }
 
     float d_a = 2 * M_PI / sides,
         angle = d_a;
 
     glm::vec2 start, end;
-    end.x = circle->radius;
+    end.x = circle.radius;
     end.y = 0.0f;
     end = end + cam_center;
     for (int i = 0; i != sides; i++)
     {
         start = end;
-        end.x = cos(angle) * circle->radius;
-        end.y = sin(angle) * circle->radius;
+        end.x = cos(angle) * circle.radius;
+        end.y = sin(angle) * circle.radius;
         end = end + cam_center;
         angle += d_a;
         SDL_RenderDrawLine(Renderer, start[0], start[1], end[0], end[1]);
     }
 }
 
-glm::vec2 Cast(Point center, glm::vec2 ray, Line boundry){
-	int x1 = center.Pos[0];
-	int x2 = center.Pos[0] + ray[0];
-	int y1 = center.Pos[1];
-	int y2 = center.Pos[1] + ray[1];
 
-	int x3 = boundry.one.Pos[0];
-	int x4 = boundry.two.Pos[0];
-	int y3 = boundry.one.Pos[1];
-	int y4 = boundry.two.Pos[1];
+glm::vec2 Cast(glm::vec2 center, glm::vec2 ray, Line boundry){
+	int x1 = center[0];
+	int x2 = center[0] + ray[0];
+	int y1 = center[1];
+	int y2 = center[1] + ray[1];
+
+	int x3 = boundry.one[0];
+	int x4 = boundry.two[0];
+	int y3 = boundry.one[1];
+	int y4 = boundry.two[1];
 
 	float den = (x1 - x2) * ( y3-y4) - (y1-y2) * (x3 - x4);
+	//den == 0 means that the lines are parallel and divide by zero will cause crashes
 	if (den == 0){
 	    return glm::vec2(-1,-1);
 	}
@@ -188,45 +134,81 @@ glm::vec2 Cast(Point center, glm::vec2 ray, Line boundry){
 	return glm::vec2(t,u);
 }
 
+Line shift(Line line, glm::vec2 vector){
+	Line res = line;
+	res.one = line.one + vector;
+	res.two = line.two +  vector;
+	return res;
+}
+
+
+glm::vec2 Cast(Rectangle rect, glm::vec2 ray, Line boundry){
+	int x1 = boundry.one[0];
+	int x2 = boundry.two[0];
+	int y1 = boundry.one[1];
+	int y2 = boundry.two[1];
+	
+	std::vector<Line> outline;
+	outline.reserve(4);
+	//construct 4 boundries to account for the width of the rectangle
+	
+	Line bleft = {glm::vec2(x1 - rect.width/2,y1 - rect.height/2),glm::vec2(x2 - rect.width/2, y2 + rect.height/2)};
+	
+	outline.push_back(bleft);
+
+	Line bright = {glm::vec2(x1 + rect.width/2,y1 - rect.height/2),glm::vec2(x2 + rect.width/2, y2 + rect.height/2)};
+	
+	outline.push_back(bright);
+
+	Line btop = {glm::vec2(x1 - rect.width/2,y1 - rect.height/2),glm::vec2(x1 + rect.width/2, y1 - rect.height/2)};
+	
+	outline.push_back(btop);
+	
+	Line bbot = {glm::vec2(x2 - rect.width/2,y2 + rect.height/2),glm::vec2(x2 + rect.width/2, y2 + rect.height/2)};
+	outline.push_back(bbot);
+	
+	glm::vec2 tandu = glm::vec2(1,1);
+	//iterate through the lines in order to find the smallest t and u
+	for (int i = 0; i < outline.size(); i++){
+	    glm::vec2 temp = Cast(rect.center, ray, outline[i]);
+	    if (temp[0] <= 1 && temp[0] >= 0 && temp[1] <= 1 && temp[1] >=0){
+	       if (temp[0] < tandu[0]){
+	           tandu = temp;
+	       }
+	    }
+	}
+	
+	
+	//RenderShape(bleft,blue);
+	//RenderShape(bright,blue);
+	//RenderShape(btop,blue);
+	//RenderShape(bbot,blue);
+
+	return tandu;
+}
+
 void RenderShape(Line line, SDL_Color color){
     SDL_SetRenderDrawColor(Renderer, color.r,color.g,color.b, color.a);
 
-    SDL_RenderDrawLine(Renderer, line.one.Pos[0],line.one.Pos[1],line.two.Pos[0],line.two.Pos[1]);
+    SDL_RenderDrawLine(Renderer, line.one[0],line.one[1],line.two[0],line.two[1]);
 }
 
 
-void RenderShape(Rectangle* rectangle, SDL_Color color, int camera_x, int camera_y){
+void RenderShape(Rectangle rectangle, SDL_Color color, int camera_x, int camera_y){
     SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b,color.a);
 
-    glm::vec2 cam_center = rectangle->center;
+    glm::vec2 cam_center = rectangle.center;
     cam_center[0] = cam_center[0] - camera_x;
     cam_center[1] = cam_center[1] - camera_y;
     
-    SDL_Rect temp = {(int)(rectangle->center[0] - rectangle->width / 2) - camera_x, (int)(rectangle->center[1] - rectangle->height / 2) - camera_y, rectangle->width, rectangle->height };
+    SDL_Rect temp = {(int)(rectangle.center[0] - rectangle.width / 2) - camera_x, (int)(rectangle.center[1] - rectangle.height / 2) - camera_y, rectangle.width, rectangle.height };
     SDL_RenderFillRect(Renderer, &temp);
 }
 
-void RenderShape(Rectangle* rectangle, SDL_Color color) {
+void RenderShape(Rectangle rectangle, SDL_Color color) {
     SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
-    SDL_Rect temp = { (int)(rectangle->center[0] - rectangle->width / 2) , (int)(rectangle->center[1] - rectangle->height / 2), rectangle->width, rectangle->height };
+    SDL_Rect temp = { (int) (rectangle.center[0] - rectangle.width / 2) , (int)(rectangle.center[1] - rectangle.height / 2), rectangle.width, rectangle.height };
     SDL_RenderFillRect(Renderer, &temp);
 }
 
-void debugInfo(Rectangle rectangle, bool coordinates) {
-    if (coordinates) {
-        printf("[%d,%d], [%d,%d], [%d,%d], [%d,%d] \n", (int)(rectangle.center[0] - rectangle.width / 2), (int)(rectangle.center[1] - rectangle.height / 2),
-            (int)(rectangle.center[0] - rectangle.width / 2), (int)(rectangle.center[1] + rectangle.height / 2),
-            (int)(rectangle.center[0] + rectangle.width / 2), (int)(rectangle.center[1] - rectangle.height / 2),
-            (int)(rectangle.center[0] + rectangle.width / 2), (int)(rectangle.center[1] + rectangle.height / 2)
-        );
-    }
-    else {
-        printf("Center = [%d, %d] | Width = %d | Height = %d\n", (int)(rectangle.center[0]), (int)(rectangle.center[1]), rectangle.width, rectangle.height);
-    }
-}
 
-
-
-void debugInfo(Circle circle) {
-    printf("Center = [%d, %d] | Radius = %d\n", circle.center[0], circle.center[1], circle.radius);
-}

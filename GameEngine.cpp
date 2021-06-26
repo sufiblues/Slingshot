@@ -6,6 +6,9 @@ const int LEVEL_WIDTH = normalized_tile * 32;
 
 
 
+Line l;
+Line wall;
+
 Rectangle primary;
 Rectangle secondary; 
 Rectangle collidable;
@@ -39,24 +42,22 @@ void gameLoop(){
     render();
 }
 
-Line l;
-Line wall;
 //TODO: easier way to initialize rectangles...
 void engineStart(){
     primary.center = glm::vec2(normalized_tile*2,normalized_tile*5);
     primary.width = 50;
     primary.height = 50;
 
-    l.one.Pos = primary.center;
-    l.two.Pos = l.one.Pos + glm::vec2(100,0);
+    l.one = primary.center;
+    l.two = l.one + glm::vec2(100,0);
     
     
     secondary.center = glm::vec2(normalized_tile * 10, normalized_tile*3);
     secondary.width = normalized_tile*2;
     secondary.height = normalized_tile*5;
 
-    wall.one.Pos = secondary.center;
-    wall.two.Pos = wall.one.Pos + glm::vec2(0,secondary.height);
+    wall.one = secondary.center;
+    wall.two = wall.one + glm::vec2(0,secondary.height);
 
     int frame_start;
     int elapsed_ticks;
@@ -101,51 +102,44 @@ void update(){
     {
         camera.y = LEVEL_HEIGHT - camera.h;
     }
+
+    PhysicsComponent p = {glm::vec2(0,0), glm::vec2(0,0)}; 
     //add inputs
     if (INPUTS.left == 1){
-    	primary.center[0] -= 5;
-    } 
-    if (INPUTS.right == 1){
-    	primary.center[0] += 5;
+    	p.velocity[0] = -5;
+    }
+    else if (INPUTS.right == 1){
+    	p.velocity[0] = 5;
+    }
+    else{
+    	p.velocity[0] = 0;
     }
     if (INPUTS.up == 1){
-    	primary.center[1] -= 5;
+    	p.velocity[1] = -5;
     }
-    if (INPUTS.down == 1){
-    	primary.center[1] += 5;
+    else if (INPUTS.down == 1){
+    	p.velocity[1] = 5;
     }
-
-    PhysicsComponent p = {glm::vec2(100,0)}; 
-    if (INPUTS.jump == 1){
-	//collidable = {glm::vec2(primary.center[0]+p.velocity[0]/2,primary.center[1]+p.velocity[1]/2), p.velocity[0],p.velocity[1]};
-    	printf("jump\n");
-	integration(&primary.center, &p);
-    	
-    	l.one.Pos = primary.center;
-    	l.two.Pos = l.one.Pos + glm::vec2(100,0);
+    else{
+    	p.velocity[1] = 0;
     }
-    Point center;
-    center.Pos = primary.center;
-
-    glm::vec2 inter = Cast(center, p.velocity, wall);
-    
-    printf("%.2f %.2f\n", inter[0], inter[1]);
- 
-
-    
-
-
-    
-
+    //cast velocity vector and detect any collisions 
+    glm::vec2 tandu = Cast(primary, p.velocity, wall); 
+	
+    //if collision is detected then only move till the edge of the boundry
+    if (tandu[0] > 0 && tandu[0] < 1 && tandu[1] < 1 && tandu[1] > 0){
+    	printf("intersection detected \n");
+	p.velocity = tandu[0] * glm::vec2(0,0);
+    }
+    integration(&primary.center,&p);
 }
 
 void render(){
     SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 0);
     SDL_RenderClear(Renderer);
     //create a viz for the distance of collidable
-    RenderShape(&primary,red);
+    RenderShape(primary,red);
     //RenderShape(&secondary, green);     
-    RenderShape(l, blue);
     RenderShape(wall, green);
     SDL_RenderPresent(Renderer); 
 }

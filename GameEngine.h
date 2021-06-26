@@ -1,14 +1,14 @@
 #ifndef GAME_ENGINE
 #define GAME_ENGINE
 
+
+#include "Shapes.h"
 #include <algorithm>
 #include "Utils.h"
 #include "Controller.h"
 #include "Texture.h"
 #include "Physics.h"
-#include "Shapes.h"
 #include "glm/vec2.hpp"
-#include "Level.h"
 
 #if EMSCRIPTEN
 #include <emscripten.h>
