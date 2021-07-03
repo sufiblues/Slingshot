@@ -5,7 +5,7 @@
 const int normalized_tile = 64;
 const int SCREEN_WIDTH = normalized_tile * 16;
 const int SCREEN_HEIGHT = normalized_tile * 9;
-const int FRAME_RATE = 30;
+const int FRAME_RATE = 10;
 const int FRAME_DELAY = 1000 / FRAME_RATE;
 
 

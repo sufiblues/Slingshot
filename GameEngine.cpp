@@ -6,12 +6,20 @@ const int LEVEL_WIDTH = normalized_tile * 32;
 
 
 
-Line l;
-Line wall;
+Line diagonal;
+Line vertical;
+Line horizontal;
+
+Line perpendicular;
+
+float VELOCITY;
 
 Rectangle primary;
 Rectangle secondary; 
 Rectangle collidable;
+
+Circle top_point;
+Circle second_point;
 
 /*Create TIDs for future textures*/
 //TODO: Figure out a better way to organize this data so it is available in the render loop
@@ -21,6 +29,8 @@ TextureID monster;
 TextureID text;
 
 SDL_Texture* test;
+
+PhysicsComponent p;
 
 //load assets for all entities
 void loadAssets(){
@@ -45,19 +55,39 @@ void gameLoop(){
 //TODO: easier way to initialize rectangles...
 void engineStart(){
     primary.center = glm::vec2(normalized_tile*2,normalized_tile*5);
-    primary.width = 50;
-    primary.height = 50;
+    primary.width = 20;
+    primary.height = 20;
+        
+    PhysicsComponent p = {glm::vec2(0,0), glm::vec2(0,0)}; 
+ 
+    VELOCITY = 10;
 
-    l.one = primary.center;
-    l.two = l.one + glm::vec2(100,0);
-    
+    p.acceleration = glm::vec2(0,5);
+
+    horizontal.one = glm::vec2(0, normalized_tile* 8);
+    horizontal.two = glm::vec2(SCREEN_WIDTH, normalized_tile*8);
     
     secondary.center = glm::vec2(normalized_tile * 10, normalized_tile*3);
     secondary.width = normalized_tile*2;
     secondary.height = normalized_tile*5;
 
-    wall.one = secondary.center;
-    wall.two = wall.one + glm::vec2(0,secondary.height);
+    vertical.one = secondary.center;
+    vertical.two = vertical.one + glm::vec2(0,secondary.height);
+	
+    diagonal.one = glm::vec2(normalized_tile*3, normalized_tile*3);
+    diagonal.two = glm::vec2(normalized_tile*7, normalized_tile*4);
+
+    perpendicular.one = diagonal.two;
+    perpendicular.two = perpendicular.one + perpendicularVector(diagonal);
+
+    top_point.center = diagonal.two;
+    top_point.radius = 40;
+    printf("horizontal distance (%f,      %f)\n", manhattanDistance(horizontal)[0], manhattanDistance(horizontal)[1]);
+    printf("vertical distance (%f,      %f)\n", manhattanDistance(vertical)[0], manhattanDistance(vertical)[1]);
+    printf("diagonal distance (%f,      %f)\n", manhattanDistance(diagonal)[0], manhattanDistance(diagonal)[1]);
+   
+
+    debugInfo(diagonal, "diag line");
 
     int frame_start;
     int elapsed_ticks;
@@ -103,34 +133,45 @@ void update(){
         camera.y = LEVEL_HEIGHT - camera.h;
     }
 
-    PhysicsComponent p = {glm::vec2(0,0), glm::vec2(0,0)}; 
     //add inputs
     if (INPUTS.left == 1){
-    	p.velocity[0] = -5;
+    	p.velocity[0] = -VELOCITY;
     }
     else if (INPUTS.right == 1){
-    	p.velocity[0] = 5;
+    	p.velocity[0] = VELOCITY;
     }
     else{
     	p.velocity[0] = 0;
     }
     if (INPUTS.up == 1){
-    	p.velocity[1] = -5;
+    	p.velocity[1] = -VELOCITY;
     }
     else if (INPUTS.down == 1){
-    	p.velocity[1] = 5;
+    	p.velocity[1] = VELOCITY;
     }
     else{
     	p.velocity[1] = 0;
     }
-    //cast velocity vector and detect any collisions 
-    glm::vec2 tandu = Cast(primary, p.velocity, wall); 
+
+    std::vector<Line> boundries; 
+    boundries.push_back(diagonal);
+    boundries.push_back(horizontal);
+    boundries.push_back(vertical);
 	
-    //if collision is detected then only move till the edge of the boundry
-    if (tandu[0] > 0 && tandu[0] < 1 && tandu[1] < 1 && tandu[1] > 0){
-    	printf("intersection detected \n");
-	p.velocity = tandu[0] * glm::vec2(0,0);
+    glm::vec2 tandu = Cast(primary, p.velocity, boundries);
+
+    //if collision is detected then  stop
+    if (tandu[0] >= 0 && tandu[0] < 1 && tandu[1] < 1 && tandu[1] >= 0){
+    	printf("intersection detected %f\n", tandu[0]);
+	p.velocity = tandu[0] * p.velocity;
+	p.velocity = trunc(p.velocity);
+	glm::vec2 pe = glm::normalize(p.velocity);
+	printf("p.vel normalized (%f,%f)\n", pe[0], pe[1]);
+	p.velocity = p.velocity - ceil(glm::normalize(p.velocity));
+	printf("center; (%f,%f))\n", primary.center[0],primary.center[1]);
+	printf("p.vel after intersection (%f,%f)\n", p.velocity[0],p.velocity[1]);
     }
+
     integration(&primary.center,&p);
 }
 
@@ -140,7 +181,20 @@ void render(){
     //create a viz for the distance of collidable
     RenderShape(primary,red);
     //RenderShape(&secondary, green);     
-    RenderShape(wall, green);
+    RenderShape(vertical, green);
+    RenderShape(horizontal, green);
+    RenderShape(diagonal,green);
+    
+
+    RenderShape(boundinglines(diagonal,primary),blue);
+    RenderShape(boundinglines(horizontal,primary),blue);
+    RenderShape(boundinglines(vertical,primary),blue);
+    //RenderShape(top_point,blue);
+
+    Line ray = {primary.center, primary.center + p.velocity};
+    RenderShape(ray, cyan);
+
+    RenderShape(perpendicular,red);
     SDL_RenderPresent(Renderer); 
 }
 

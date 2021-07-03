@@ -1,8 +1,6 @@
 #include "Shapes.h"
 
 
-
-
 /** [0:NONE] [1:TOP] [2:BOTTOM] [3:LEFT] [4:RIGHT] */
 //TODO: Fix the pointer shit to this function
 int collisionRectangleAndRectangle(Rectangle a, Rectangle b){
@@ -124,16 +122,18 @@ glm::vec2 Cast(glm::vec2 center, glm::vec2 ray, Line boundry){
 	if (den == 0){
 	    return glm::vec2(-1,-1);
 	}
-
+	
+	
+	
 	float t = ((x1 - x3)*(y3-y4) - (y1 - y3) * (x3 - x4))/ den;
         float u = -((x1 - x2)*(y1-y3) - (y1 - y2) * (x1 - x3))/ den;
 	
-	    //intersection.Pos[0] = x1 + t *(x2-x1);
-	    //intersection.Pos[1] = y1 + t * (x2-x1);
 	
+
 	return glm::vec2(t,u);
 }
 
+//shift a line by a 2d vector.
 Line shift(Line line, glm::vec2 vector){
 	Line res = line;
 	res.one = line.one + vector;
@@ -141,50 +141,115 @@ Line shift(Line line, glm::vec2 vector){
 	return res;
 }
 
+//calculates the manhattan distance of a line
+glm::vec2 manhattanDistance(Line line){
+	return glm::vec2(line.two[0] - line.one[0], line.two[1] - line.one[1]);
+}
 
-glm::vec2 Cast(Rectangle rect, glm::vec2 ray, Line boundry){
-	int x1 = boundry.one[0];
-	int x2 = boundry.two[0];
-	int y1 = boundry.one[1];
-	int y2 = boundry.two[1];
+glm::vec2 perpendicularVector(Line line){	
+	return glm::vec2(line.two[1] - line.one[1], -(line.two[0] - line.one[0]));
+}
+//pads line with a scalar amount from center out.
+Line padLine(Line line, float pad){
+    glm::vec2 point_one_pad = glm::normalize(manhattanDistance(line))* (-1*(pad/2));
+    glm::vec2 point_two_pad = glm::normalize(manhattanDistance(line))*(pad/2);
+   
+    //round off normalized vector in order to make sure that the calculated lines are integers. 
+    line.one = line.one + (point_one_pad);
+    line.two = line.two + (point_two_pad);
 	
+    return line;
+}
+
+void debugInfo(Line line,const char* name ){
+    printf("Name: %s Point one (%f,%f) Point two: (%f,%f)\n", name, line.one[0], line.one[1], line.two[0], line.two[1]);
+}
+
+//TODO: Create a roundline function. Ideally the rounding would occur after all transformations are done on the object.
+
+//constructs bounding lines from a line and rectangle
+std::vector<Line> boundinglines(Line boundry, Rectangle rect){
+	//putting ceil because i Would much rather a character be one pixel above a boundry than inside it.
+	float padding = ceil(sqrt(pow((float)rect.width,2) + pow((float)rect.height,2)));		
+
+	Line m1 = padLine(shift(boundry, round(glm::normalize(perpendicularVector(boundry)))*round(glm::vec2(rect.width/2, rect.height/2))), padding);
+
+	Line m2 = padLine(shift(boundry, round(glm::normalize(perpendicularVector(boundry)))*round(glm::vec2(-rect.width/2, -rect.height/2))),padding);
+
+	Line m3 = {m1.one, m2.one};
+
+	Line m4 = {m1.two, m2.two};
+
 	std::vector<Line> outline;
 	outline.reserve(4);
 	//construct 4 boundries to account for the width of the rectangle
-	
-	Line bleft = {glm::vec2(x1 - rect.width/2,y1 - rect.height/2),glm::vec2(x2 - rect.width/2, y2 + rect.height/2)};
-	
-	outline.push_back(bleft);
+	outline.push_back(m1);
+	outline.push_back(m2);	
+	outline.push_back(m3);
+	outline.push_back(m4);
 
-	Line bright = {glm::vec2(x1 + rect.width/2,y1 - rect.height/2),glm::vec2(x2 + rect.width/2, y2 + rect.height/2)};
+	return outline;
 	
-	outline.push_back(bright);
 
-	Line btop = {glm::vec2(x1 - rect.width/2,y1 - rect.height/2),glm::vec2(x1 + rect.width/2, y1 - rect.height/2)};
+}
+
+//TODO: Can be speed up by not creating new padding per line
+glm::vec2 Cast(Rectangle rect, glm::vec2 ray, std::vector<Line> boundries){
+	glm::vec2 tandu = glm::vec2(1,1);
+
+	for (int i =0 ; i < boundries.size(); i++){
+	    glm::vec2 temp = Cast(rect, ray, boundries[i]);
+	    if (temp[0] < 1 && temp[0] >= 0){
+	    	if (temp[0] < tandu[0]){
+		    tandu = temp;
+		}
+	    }
+	}
+
+	return tandu;
+}
+
+glm::vec2 Cast(Rectangle rect, glm::vec2 ray, Line boundry){
+
 	
-	outline.push_back(btop);
-	
-	Line bbot = {glm::vec2(x2 - rect.width/2,y2 + rect.height/2),glm::vec2(x2 + rect.width/2, y2 + rect.height/2)};
-	outline.push_back(bbot);
+	//create a pad 	
+	float padding = ceil(sqrt(pow((float)rect.width,2) + pow((float)rect.height,2)));		
+
+	Line m1 = padLine(shift(boundry, round(glm::normalize(perpendicularVector(boundry)))*round(glm::vec2(rect.width/2, rect.height/2))), padding);
+
+	Line m2 = padLine(shift(boundry, round(glm::normalize(perpendicularVector(boundry)))*round(glm::vec2(-rect.width/2, -rect.height/2))),padding);	
+
+	Line m3 = {m1.one, m2.one};
+
+	Line m4 = {m1.two, m2.two};
+
+	std::vector<Line> outline;
+	outline.reserve(4);
+	//construct 4 boundries to account for the width of the rectangle
+	outline.push_back(m1);
+	outline.push_back(m2);	
+	outline.push_back(m3);
+	outline.push_back(m4);
 	
 	glm::vec2 tandu = glm::vec2(1,1);
 	//iterate through the lines in order to find the smallest t and u
 	for (int i = 0; i < outline.size(); i++){
 	    glm::vec2 temp = Cast(rect.center, ray, outline[i]);
-	    if (temp[0] <= 1 && temp[0] >= 0 && temp[1] <= 1 && temp[1] >=0){
+	    if (temp[0] < 1 && temp[0] >= 0){ 
 	       if (temp[0] < tandu[0]){
 	           tandu = temp;
 	       }
 	    }
 	}
 	
-	
-	//RenderShape(bleft,blue);
-	//RenderShape(bright,blue);
-	//RenderShape(btop,blue);
-	//RenderShape(bbot,blue);
-
 	return tandu;
+}
+
+void RenderShape(std::vector<Line> lines, SDL_Color color){
+	
+	for (int i = 0; i < lines.size(); i++){
+		RenderShape(lines[i],color);
+	}
 }
 
 void RenderShape(Line line, SDL_Color color){
