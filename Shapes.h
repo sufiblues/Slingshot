@@ -29,25 +29,37 @@ typedef struct Rectangle {
 	int height;
 } Rectangle;
 /*** return t,u which are used to figure out intersection on the two line segments ***/
-glm::vec2 Cast(glm::vec2 center, glm::vec2 ray, Line boundry);
+//line to line
+glm::vec2 rayCast(glm::vec2 center, glm::vec2 ray, Line boundry);
+//rect to line
 glm::vec2 Cast(Rectangle rect, glm::vec2 ray, Line boundry);
 glm::vec2 Cast(Rectangle rect, glm::vec2 ray, std::vector<Line> boundries);
+//TODO: Rect to Rect casters
+glm::vec2 Cast(Rectangle rect, glm::vec2 ray, Rectangle block);
+glm::vec2 Cast(Rectangle rect, glm::vec2 ray, std::vector<Rectangle> blocks);
+/*** Functions to change lines ***/
 Line shift(Line line, glm::vec2 vector);
-
+Line padLine(Line line, float pad);
 glm::vec2 manhattanDistance(Line line);
 glm::vec2 perpendicularVector(Line line);
 
-bool collisionCircleAndRectangle(Circle circle, Rectangle rect);
+//Depreciated
 int collisionRectangleAndRectangle(Rectangle a, Rectangle b);
 
+//used for mostly debug purposes.
 std::vector<Line> boundinglines(Line boundry, Rectangle rect); 
 
-void RenderShape(std::vector<Line> lines, SDL_Color);
+/*** Render functions with no camera transformations ***/
 void RenderShape(Line line, SDL_Color color);
+void RenderShape(std::vector<Line> lines, SDL_Color);
 void RenderShape(Circle circle,SDL_Color color);
 void RenderShape(Rectangle rectangle, SDL_Color color);
+/*** Render functions with camera transformations ***/
+void RenderShape(Line line, SDL_Color color, int camera_x, int camera_y);
+void RenderShape(std::vector<Line> lines, SDL_Color color, int camera_x, int camera_y);
 void RenderShape(Circle circle, SDL_Color color, int camera_x, int camera_y);
 void RenderShape(Rectangle rectangle, SDL_Color color, int camera_x, int camera_y);
 
+/*** Debug Info ***/
 void debugInfo(Line line, const char* name);
 #endif // !_SHAPES_H
